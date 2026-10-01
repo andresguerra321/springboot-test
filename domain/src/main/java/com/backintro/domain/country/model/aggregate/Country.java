@@ -1,0 +1,143 @@
+package com.backintro.domain.country.model.aggregate;
+
+import com.backintro.domain.country.model.valueobject.CountryCode;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
+
+/**
+ * Agregado raíz de Country en la capa de Dominio.
+ * POJO puro e independiente sin anotaciones de frameworks.
+ */
+public class Country {
+
+    private UUID id;
+    private String nameCountry;
+    private CountryCode codeCountry;
+    private String description;
+    private Boolean isActive;
+    private String telephonePrefix;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public Country() {
+    }
+
+    public Country(UUID id, String nameCountry, CountryCode codeCountry, String description,
+                   Boolean isActive, String telephonePrefix, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.nameCountry = nameCountry;
+        this.codeCountry = codeCountry;
+        this.description = description;
+        this.isActive = isActive != null ? isActive : Boolean.TRUE;
+        this.telephonePrefix = telephonePrefix;
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
+    }
+
+    public static Country create(String nameCountry, String codeCountry, String description, String telephonePrefix) {
+        LocalDateTime now = LocalDateTime.now();
+        return new Country(
+                UUID.randomUUID(),
+                nameCountry,
+                new CountryCode(codeCountry),
+                description,
+                Boolean.TRUE,
+                telephonePrefix,
+                now,
+                now
+        );
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getNameCountry() {
+        return nameCountry;
+    }
+
+    public void setNameCountry(String nameCountry) {
+        this.nameCountry = nameCountry;
+    }
+
+    public CountryCode getCodeCountry() {
+        return codeCountry;
+    }
+
+    public void setCodeCountry(CountryCode codeCountry) {
+        this.codeCountry = codeCountry;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean active) {
+        isActive = active;
+    }
+
+    public String getTelephonePrefix() {
+        return telephonePrefix;
+    }
+
+    public void setTelephonePrefix(String telephonePrefix) {
+        this.telephonePrefix = telephonePrefix;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Country country = (Country) o;
+        return Objects.equals(id, country.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "id=" + id +
+                ", nameCountry='" + nameCountry + '\'' +
+                ", codeCountry=" + codeCountry +
+                ", description='" + description + '\'' +
+                ", isActive=" + isActive +
+                ", telephonePrefix='" + telephonePrefix + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
+}

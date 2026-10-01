@@ -1,0 +1,33 @@
+server:
+  port: ${PORT:8081}
+
+spring:
+  # Database Configuration - PostgreSQL (Producción)
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:bkslmsdb}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:1234}
+    driver-class-name: org.postgresql.Driver
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        "[format_sql]": false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Flyway Configuration
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+
+# Media Storage Configuration
+media:
+  storage:
+    base-path: ./uploads
