@@ -24,6 +24,10 @@ public abstract class AggregateRoot {
         registerEvent(event);
     }
 
+    protected void recordEvent(DomainEvent event) {
+        registerEvent(event);
+    }
+
     public List<DomainEvent> pullDomainEvents() {
         List<DomainEvent> recordedEvents = new ArrayList<>(this.domainEvents);
         this.domainEvents.clear();

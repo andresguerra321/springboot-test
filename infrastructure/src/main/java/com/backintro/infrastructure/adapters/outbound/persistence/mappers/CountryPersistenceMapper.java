@@ -16,7 +16,7 @@ public class CountryPersistenceMapper {
             return null;
         }
 
-        return Country.reconstitute(
+        return Country.restore(
                 new CountryId(entity.getId()),
                 entity.getNameCountry(),
                 entity.getCodeCountry(),

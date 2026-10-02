@@ -20,21 +20,9 @@ public class Country extends AggregateRoot {
         String code,
         boolean active) {
 
-        this.id = Objects.requireNonNull(
-            id,
-            "id must not be null"
-        );
-
-        this.name = Objects.requireNonNull(
-            name,
-            "name must not be null"
-        );
-
-        this.code = Objects.requireNonNull(
-            code,
-            "code must not be null"
-        );
-
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.name = Objects.requireNonNull(name, "name must not be null");
+        this.code = Objects.requireNonNull(code, "code must not be null");
         this.active = active;
     }
 
@@ -43,61 +31,79 @@ public class Country extends AggregateRoot {
         String code) {
 
         CountryId id = CountryId.generate();
+
         Country country = new Country(
             id,
             name,
             code,
-            true
-        );
+            true);
 
-        country.record(
+        country.recordEvent(
             new CountryRegisteredEvent(
                 id,
-                LocalDateTime.now()
-            )
-        );
+                LocalDateTime.now()));
 
         return country;
+    }
+
+    public static Country restore(
+        CountryId id,
+        String name,
+        String code,
+        boolean active) {
+        return new Country(
+            id,
+            name,
+            code,
+            active);
     }
 
     public void update(
         String name,
         String code) {
 
-        this.name = Objects.requireNonNull(
-            name,
-            "name must not be null"
-        );
+        this.name = Objects.requireNonNull(name);
+        this.code = Objects.requireNonNull(code);
 
-        this.code = Objects.requireNonNull(
-            code,
-            "code must not be null"
-        );
-
-        record(
+        recordEvent(
             new CountryUpdatedEvent(
                 this.id,
                 this.name,
                 this.code,
-                LocalDateTime.now()
-            )
-        );
+                LocalDateTime.now()));
     }
 
-    public static Country reconstitute(
-        CountryId id,
-        String name,
-        String code,
-        boolean active) {
-        return new Country(id, name, code, active);
+    public CountryId id() {
+        return id;
     }
 
-    public static Country from(
-        CountryId id,
-        String name,
-        String code,
-        boolean active) {
-        return new Country(id, name, code, active);
+    public String name() {
+        return name;
+    }
+
+    public String code() {
+        return code;
+    }
+
+    public boolean active() {
+        return active;
+    }
+
+    // Alias para compatibilidad con mappers y frameworks
+    public CountryId getId() {
+        return id();
+    }
+
+    public String getName() {
+        return name();
+    }
+
+    public String getCode() {
+        return code();
+    }
+
+    public boolean isActive() {
+        return active();
     }
 
     public void deactivate() {
@@ -106,22 +112,6 @@ public class Country extends AggregateRoot {
 
     public void activate() {
         this.active = true;
-    }
-
-    public CountryId getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public boolean isActive() {
-        return active;
     }
 
     @Override
