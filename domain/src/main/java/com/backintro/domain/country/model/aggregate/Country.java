@@ -54,7 +54,7 @@ public class Country extends com.backintro.domain.common.model.AggregateRoot {
                 now,
                 now
         );
-        country.registerEvent(new com.backintro.domain.country.event.CountryRegisteredEvent(country.getId(), nameCountry, codeCountry));
+        country.registerEvent(new com.backintro.domain.country.event.CountryRegisteredEvent(country.getCountryId(), now));
         return country;
     }
 
@@ -75,15 +75,11 @@ public class Country extends com.backintro.domain.common.model.AggregateRoot {
             this.isActive = isActive;
         }
         this.updatedAt = LocalDateTime.now();
-        registerEvent(new com.backintro.domain.country.event.CountryUpdatedEvent(
-                this.id,
-                this.nameCountry,
-                this.codeCountry != null ? this.codeCountry.getValue() : null
-        ));
+        registerEvent(new com.backintro.domain.country.event.CountryUpdatedEvent(this.getCountryId(), this.updatedAt));
     }
 
     public void delete() {
-        registerEvent(new com.backintro.domain.country.event.CountryDeletedEvent(this.id));
+        registerEvent(new com.backintro.domain.country.event.CountryDeletedEvent(this.getCountryId(), LocalDateTime.now()));
     }
 
     public com.backintro.domain.country.model.valueobject.CountryId getCountryId() {

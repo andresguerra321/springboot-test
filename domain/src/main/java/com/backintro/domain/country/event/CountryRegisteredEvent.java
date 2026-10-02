@@ -1,41 +1,26 @@
 package com.backintro.domain.country.event;
 
-import com.backintro.domain.common.event.DomainEvent;
-
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Objects;
 
-/**
- * Evento de dominio emitido cuando un País es registrado.
- */
-public class CountryRegisteredEvent implements DomainEvent {
+import com.backintro.domain.common.event.DomainEvent;
+import com.backintro.domain.country.model.valueobject.CountryId;
 
-    private final UUID countryId;
-    private final String nameCountry;
-    private final String codeCountry;
-    private final LocalDateTime occurredOn;
+public record CountryRegisteredEvent(
+    CountryId id,
+    LocalDateTime occurredOn
+) implements DomainEvent {
 
-    public CountryRegisteredEvent(UUID countryId, String nameCountry, String codeCountry) {
-        this.countryId = countryId;
-        this.nameCountry = nameCountry;
-        this.codeCountry = codeCountry;
-        this.occurredOn = LocalDateTime.now();
-    }
+    public CountryRegisteredEvent {
 
-    public UUID getCountryId() {
-        return countryId;
-    }
+        Objects.requireNonNull(
+            id,
+            "id must not be null"
+        );
 
-    public String getNameCountry() {
-        return nameCountry;
-    }
-
-    public String getCodeCountry() {
-        return codeCountry;
-    }
-
-    @Override
-    public LocalDateTime occurredOn() {
-        return occurredOn;
+        Objects.requireNonNull(
+            occurredOn,
+            "occurredOn must not be null"
+        );
     }
 }

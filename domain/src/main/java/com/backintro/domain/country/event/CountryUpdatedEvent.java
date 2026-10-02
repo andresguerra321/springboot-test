@@ -1,51 +1,26 @@
 package com.backintro.domain.country.event;
 
-import com.backintro.domain.common.event.DomainEvent;
-
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Objects;
 
-/**
- * Evento de dominio emitido cuando un País es actualizado.
- */
-public class CountryUpdatedEvent implements DomainEvent {
+import com.backintro.domain.common.event.DomainEvent;
+import com.backintro.domain.country.model.valueobject.CountryId;
 
-    private final UUID countryId;
-    private final String nameCountry;
-    private final String codeCountry;
-    private final LocalDateTime occurredOn;
+public record CountryUpdatedEvent(
+    CountryId id,
+    LocalDateTime occurredOn
+) implements DomainEvent {
 
-    public CountryUpdatedEvent(UUID countryId, String nameCountry, String codeCountry) {
-        this.countryId = countryId;
-        this.nameCountry = nameCountry;
-        this.codeCountry = codeCountry;
-        this.occurredOn = LocalDateTime.now();
-    }
+    public CountryUpdatedEvent {
 
-    public UUID getCountryId() {
-        return countryId;
-    }
+        Objects.requireNonNull(
+            id,
+            "id must not be null"
+        );
 
-    public String getNameCountry() {
-        return nameCountry;
-    }
-
-    public String getCodeCountry() {
-        return codeCountry;
-    }
-
-    @Override
-    public LocalDateTime occurredOn() {
-        return occurredOn;
-    }
-
-    @Override
-    public String toString() {
-        return "CountryUpdatedEvent{" +
-                "countryId=" + countryId +
-                ", nameCountry='" + nameCountry + '\'' +
-                ", codeCountry='" + codeCountry + '\'' +
-                ", occurredOn=" + occurredOn +
-                '}';
+        Objects.requireNonNull(
+            occurredOn,
+            "occurredOn must not be null"
+        );
     }
 }

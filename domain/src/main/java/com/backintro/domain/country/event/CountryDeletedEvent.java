@@ -1,37 +1,26 @@
 package com.backintro.domain.country.event;
 
-import com.backintro.domain.common.event.DomainEvent;
-
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Objects;
 
-/**
- * Evento de dominio emitido cuando un País es eliminado.
- */
-public class CountryDeletedEvent implements DomainEvent {
+import com.backintro.domain.common.event.DomainEvent;
+import com.backintro.domain.country.model.valueobject.CountryId;
 
-    private final UUID countryId;
-    private final LocalDateTime occurredOn;
+public record CountryDeletedEvent(
+    CountryId id,
+    LocalDateTime occurredOn
+) implements DomainEvent {
 
-    public CountryDeletedEvent(UUID countryId) {
-        this.countryId = countryId;
-        this.occurredOn = LocalDateTime.now();
-    }
+    public CountryDeletedEvent {
 
-    public UUID getCountryId() {
-        return countryId;
-    }
+        Objects.requireNonNull(
+            id,
+            "id must not be null"
+        );
 
-    @Override
-    public LocalDateTime occurredOn() {
-        return occurredOn;
-    }
-
-    @Override
-    public String toString() {
-        return "CountryDeletedEvent{" +
-                "countryId=" + countryId +
-                ", occurredOn=" + occurredOn +
-                '}';
+        Objects.requireNonNull(
+            occurredOn,
+            "occurredOn must not be null"
+        );
     }
 }
