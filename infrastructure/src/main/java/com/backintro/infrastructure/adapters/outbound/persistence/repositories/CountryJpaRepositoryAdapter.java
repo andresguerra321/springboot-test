@@ -144,6 +144,13 @@ public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRe
     }
 
     @Override
+    public void delete(Country country) {
+        if (country != null && country.id() != null && country.id().value() != null) {
+            deleteById(country.id().value());
+        }
+    }
+
+    @Override
     public void deleteById(CountryId id) {
         if (id != null && id.value() != null) {
             deleteById(id.value());

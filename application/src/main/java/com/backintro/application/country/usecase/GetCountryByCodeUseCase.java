@@ -23,7 +23,9 @@ public class GetCountryByCodeUseCase {
             throw new IllegalArgumentException("El código de país no puede ser nulo ni vacío");
         }
 
-        Country country = countryRepository.findByCode(code.trim())
+        Country country = countryRepository.findAll().stream()
+                .filter(c -> c.code().equalsIgnoreCase(code.trim()))
+                .findFirst()
                 .orElseThrow(() -> new CountryNotFoundApplicationException(code));
 
         return CountryResponse.fromDomain(country);

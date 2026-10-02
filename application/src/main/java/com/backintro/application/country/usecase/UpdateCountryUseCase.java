@@ -9,7 +9,6 @@ import com.backintro.domain.country.model.valueobject.CountryId;
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Caso de uso: Actualizar los datos de un País existente.
@@ -32,15 +31,14 @@ public class UpdateCountryUseCase {
                 .orElseThrow(() -> new CountryNotFoundApplicationException(command.getId()));
 
         String newCode = command.getCodeCountry();
-        if (newCode != null && !newCode.trim().isEmpty() && !newCode.equalsIgnoreCase(country.getCode())) {
-            Optional<Country> existingWithCode = countryRepository.findByCode(newCode);
-            if (existingWithCode.isPresent() && !existingWithCode.get().getId().equals(country.getId())) {
+        if (newCode != null && !newCode.trim().isEmpty() && !newCode.equalsIgnoreCase(country.code())) {
+            if (countryRepository.existsByCode(newCode.trim())) {
                 throw new CountryAlreadyExistsException("Ya existe otro país registrado con el código: " + newCode);
             }
         }
 
-        String nameToUpdate = command.getNameCountry() != null ? command.getNameCountry() : country.getName();
-        String codeToUpdate = newCode != null ? newCode : country.getCode();
+        String nameToUpdate = command.getNameCountry() != null ? command.getNameCountry() : country.name();
+        String codeToUpdate = newCode != null ? newCode : country.code();
 
         country.update(nameToUpdate, codeToUpdate);
 

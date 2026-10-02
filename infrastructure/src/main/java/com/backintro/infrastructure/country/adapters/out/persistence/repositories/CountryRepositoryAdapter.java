@@ -47,14 +47,6 @@ public class CountryRepositoryAdapter implements CountryRepository {
     }
 
     @Override
-    public Optional<Country> findByCode(String code) {
-        if (code == null || code.trim().isEmpty()) {
-            return Optional.empty();
-        }
-        return springDataRepository.findByCodeCountry(code.trim()).map(mapper::toDomain);
-    }
-
-    @Override
     public List<Country> findAll() {
         List<CountryJpaEntity> entities = springDataRepository.findAll();
         List<Country> domainList = new ArrayList<>(entities.size());
@@ -65,25 +57,17 @@ public class CountryRepositoryAdapter implements CountryRepository {
     }
 
     @Override
-    public void deleteById(CountryId id) {
-        if (id != null && id.value() != null) {
-            springDataRepository.deleteById(id.value());
-        }
-    }
-
-    @Override
-    public boolean existsById(CountryId id) {
-        if (id == null || id.value() == null) {
-            return false;
-        }
-        return springDataRepository.existsById(id.value());
-    }
-
-    @Override
     public boolean existsByCode(String code) {
         if (code == null || code.trim().isEmpty()) {
             return false;
         }
         return springDataRepository.existsByCodeCountry(code.trim());
+    }
+
+    @Override
+    public void delete(Country country) {
+        if (country != null && country.id() != null && country.id().value() != null) {
+            springDataRepository.deleteById(country.id().value());
+        }
     }
 }
