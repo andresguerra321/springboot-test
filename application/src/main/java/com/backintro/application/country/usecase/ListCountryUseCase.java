@@ -24,7 +24,7 @@ public class ListCountryUseCase {
         List<CountryResponse> responses = new ArrayList<>(countries.size());
 
         for (Country country : countries) {
-            responses.add(CountryResponse.fromDomain(country));
+            responses.add(new CountryResponse(country.id().value(), country.name(), country.code()));
         }
 
         return responses;

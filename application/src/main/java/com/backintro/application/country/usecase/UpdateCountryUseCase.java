@@ -51,6 +51,6 @@ public class UpdateCountryUseCase {
         }
 
         Country updated = countryRepository.save(country);
-        return CountryResponse.fromDomain(updated);
+        return new CountryResponse(updated.id().value(), updated.name(), updated.code());
     }
 }

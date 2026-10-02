@@ -28,6 +28,6 @@ public class GetCountryByIdUseCase {
         Country country = countryRepository.findById(new CountryId(id))
                 .orElseThrow(() -> new CountryNotFoundApplicationException(id));
 
-        return CountryResponse.fromDomain(country);
+        return new CountryResponse(country.id().value(), country.name(), country.code());
     }
 }

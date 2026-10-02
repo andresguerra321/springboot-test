@@ -28,6 +28,6 @@ public class GetCountryByCodeUseCase {
                 .findFirst()
                 .orElseThrow(() -> new CountryNotFoundApplicationException(code));
 
-        return CountryResponse.fromDomain(country);
+        return new CountryResponse(country.id().value(), country.name(), country.code());
     }
 }

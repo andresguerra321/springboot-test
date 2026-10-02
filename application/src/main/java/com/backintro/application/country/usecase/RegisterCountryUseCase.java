@@ -33,6 +33,6 @@ public class RegisterCountryUseCase {
 
         Country newCountry = Country.register(name, code);
         Country saved = countryRepository.save(newCountry);
-        return CountryResponse.fromDomain(saved);
+        return new CountryResponse(saved.id().value(), saved.name(), saved.code());
     }
 }
