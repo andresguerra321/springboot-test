@@ -32,9 +32,9 @@ public class CountryPersistenceMapper {
         LocalDateTime now = LocalDateTime.now();
 
         return new CountryJpaEntity(
-                domain.getId() != null ? domain.getId().value() : null,
-                domain.getName(),
-                domain.getCode(),
+                domain.id() != null ? domain.id().value() : null,
+                domain.name(),
+                domain.code(),
                 null,
                 domain.isActive(),
                 null,

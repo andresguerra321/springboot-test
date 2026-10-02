@@ -3,7 +3,7 @@ package com.backintro.infrastructure.country.adapters.in.rest.dtos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record UpdateCountryRequest(
+public record CreateCountryRequest(
 
         @NotBlank(message = "name is required")
         String name,

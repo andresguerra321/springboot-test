@@ -85,7 +85,7 @@ public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRe
             if (tx.isActive()) {
                 tx.rollback();
             }
-            throw new RuntimeException("Error en la transacción al persistir el país: " + country.getName(), e);
+            throw new RuntimeException("Error en la transacción al persistir el país: " + country.name(), e);
         } finally {
             if (selfManaged && em.isOpen()) {
                 em.close();

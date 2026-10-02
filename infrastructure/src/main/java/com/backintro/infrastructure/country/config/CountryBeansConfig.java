@@ -1,49 +1,66 @@
 package com.backintro.infrastructure.country.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.backintro.application.country.usecase.DeleteCountryUseCase;
-import com.backintro.application.country.usecase.GetCountryByCodeUseCase;
 import com.backintro.application.country.usecase.GetCountryByIdUseCase;
 import com.backintro.application.country.usecase.ListCountryUseCase;
 import com.backintro.application.country.usecase.RegisterCountryUseCase;
 import com.backintro.application.country.usecase.UpdateCountryUseCase;
 import com.backintro.domain.country.port.repository.CountryRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.backintro.infrastructure.country.adapters.out.persistence.mappers.CountryPersistenceMapper;
+import com.backintro.infrastructure.country.adapters.out.persistence.repositories.CountryJpaRepository;
+import com.backintro.infrastructure.country.adapters.out.persistence.repositories.CountryRepositoryAdapter;
 
-/**
- * Configuración de beans de Spring para registrar los Casos de Uso de Country de la capa de Aplicación
- * manteniendo la capa de aplicación desacoplada de anotaciones de Spring.
- */
 @Configuration
 public class CountryBeansConfig {
 
     @Bean
-    public RegisterCountryUseCase registerCountryUseCase(CountryRepository countryRepository) {
-        return new RegisterCountryUseCase(countryRepository);
+    public CountryPersistenceMapper countryPersistenceMapper() {
+        return new CountryPersistenceMapper();
     }
 
     @Bean
-    public GetCountryByIdUseCase getCountryByIdUseCase(CountryRepository countryRepository) {
-        return new GetCountryByIdUseCase(countryRepository);
+    public CountryRepository countryRepository(CountryJpaRepository repository, CountryPersistenceMapper mapper) {
+        return new CountryRepositoryAdapter(
+                repository,
+                mapper
+        );
     }
 
     @Bean
-    public GetCountryByCodeUseCase getCountryByCodeUseCase(CountryRepository countryRepository) {
-        return new GetCountryByCodeUseCase(countryRepository);
+    public RegisterCountryUseCase registerCountryUseCase(CountryRepository repository) {
+        return new RegisterCountryUseCase(
+                repository
+        );
     }
 
     @Bean
-    public ListCountryUseCase listCountryUseCase(CountryRepository countryRepository) {
-        return new ListCountryUseCase(countryRepository);
+    public GetCountryByIdUseCase getCountryByIdUseCase(CountryRepository repository) {
+        return new GetCountryByIdUseCase(
+                repository
+        );
     }
 
     @Bean
-    public UpdateCountryUseCase updateCountryUseCase(CountryRepository countryRepository) {
-        return new UpdateCountryUseCase(countryRepository);
+    public ListCountryUseCase listCountryUseCase(CountryRepository repository) {
+        return new ListCountryUseCase(
+                repository
+        );
     }
 
     @Bean
-    public DeleteCountryUseCase deleteCountryUseCase(CountryRepository countryRepository) {
-        return new DeleteCountryUseCase(countryRepository);
+    public UpdateCountryUseCase updateCountryUseCase(CountryRepository repository) {
+        return new UpdateCountryUseCase(
+                repository
+        );
+    }
+
+    @Bean
+    public DeleteCountryUseCase deleteCountryUseCase(CountryRepository repository) {
+        return new DeleteCountryUseCase(
+                repository
+        );
     }
 }

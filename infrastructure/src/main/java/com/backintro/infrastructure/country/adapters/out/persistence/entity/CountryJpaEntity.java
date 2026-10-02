@@ -1,36 +1,44 @@
 package com.backintro.infrastructure.country.adapters.out.persistence.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Entidad JPA para la tabla 'countries'.
- */
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+
 @Entity
-@Table(name = "countries")
+@Table(
+        name = "countries",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_countries_code",
+                        columnNames = "code_country"
+                )
+        }
+)
 public class CountryJpaEntity {
 
     @Id
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "name_country", length = 50, nullable = false)
-    private String nameCountry;
+    @Column(name = "name_country", nullable = false, length = 120)
+    private String name;
 
-    @Column(name = "code_country", length = 10)
-    private String codeCountry;
+    @Column(name = "code_country", nullable = false, length = 10, unique = true)
+    private String code;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean active;
 
     @Column(name = "description", length = 100)
     private String description;
-
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
 
     @Column(name = "telephone_prefix", length = 5)
     private String telephonePrefix;
@@ -44,16 +52,26 @@ public class CountryJpaEntity {
     public CountryJpaEntity() {
     }
 
-    public CountryJpaEntity(UUID id, String nameCountry, String codeCountry, String description,
-                            Boolean isActive, String telephonePrefix, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public CountryJpaEntity(UUID id, String name, String code) {
         this.id = id;
-        this.nameCountry = nameCountry;
-        this.codeCountry = codeCountry;
-        this.description = description;
-        this.isActive = isActive;
-        this.telephonePrefix = telephonePrefix;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.name = name;
+        this.code = code;
+        this.active = true;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+        if (this.updatedAt == null) {
+            this.updatedAt = LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 
     public UUID getId() {
@@ -64,20 +82,28 @@ public class CountryJpaEntity {
         this.id = id;
     }
 
-    public String getNameCountry() {
-        return nameCountry;
+    public String getName() {
+        return name;
     }
 
-    public void setNameCountry(String nameCountry) {
-        this.nameCountry = nameCountry;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getCodeCountry() {
-        return codeCountry;
+    public String getCode() {
+        return code;
     }
 
-    public void setCodeCountry(String codeCountry) {
-        this.codeCountry = codeCountry;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getDescription() {
@@ -86,14 +112,6 @@ public class CountryJpaEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean active) {
-        isActive = active;
     }
 
     public String getTelephonePrefix() {

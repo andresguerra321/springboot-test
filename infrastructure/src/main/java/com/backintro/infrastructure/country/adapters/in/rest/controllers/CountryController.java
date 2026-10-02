@@ -1,18 +1,8 @@
 package com.backintro.infrastructure.country.adapters.in.rest.controllers;
 
-import com.backintro.application.country.command.RegisterCountryCommand;
-import com.backintro.application.country.command.UpdateCountryCommand;
-import com.backintro.application.country.dto.CountryResponse;
-import com.backintro.application.country.usecase.DeleteCountryUseCase;
-import com.backintro.application.country.usecase.GetCountryByCodeUseCase;
-import com.backintro.application.country.usecase.GetCountryByIdUseCase;
-import com.backintro.application.country.usecase.ListCountryUseCase;
-import com.backintro.application.country.usecase.RegisterCountryUseCase;
-import com.backintro.application.country.usecase.UpdateCountryUseCase;
-import com.backintro.infrastructure.country.adapters.in.rest.dtos.RegisterCountryRequest;
-import com.backintro.infrastructure.country.adapters.in.rest.dtos.UpdateCountryRequest;
-import com.backintro.domain.country.model.valueobject.CountryId;
-import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,80 +14,110 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.UUID;
+import com.backintro.application.country.command.RegisterCountryCommand;
+import com.backintro.application.country.command.UpdateCountryCommand;
+import com.backintro.application.country.dto.CountryResponse;
+import com.backintro.application.country.usecase.DeleteCountryUseCase;
+import com.backintro.application.country.usecase.GetCountryByIdUseCase;
+import com.backintro.application.country.usecase.ListCountryUseCase;
+import com.backintro.application.country.usecase.RegisterCountryUseCase;
+import com.backintro.application.country.usecase.UpdateCountryUseCase;
+import com.backintro.domain.country.model.valueobject.CountryId;
+import com.backintro.infrastructure.country.adapters.in.rest.dtos.CreateCountryRequest;
+import com.backintro.infrastructure.country.adapters.in.rest.dtos.UpdateCountryRequest;
 
-/**
- * Adaptador de entrada REST para el recurso Country.
- */
+import jakarta.validation.Valid;
+
 @RestController
-@RequestMapping("/api/v1/countries")
+@RequestMapping("/api/countries")
 public class CountryController {
 
-    private final RegisterCountryUseCase registerCountryUseCase;
-    private final GetCountryByIdUseCase getCountryByIdUseCase;
-    private final GetCountryByCodeUseCase getCountryByCodeUseCase;
-    private final ListCountryUseCase listCountryUseCase;
-    private final UpdateCountryUseCase updateCountryUseCase;
-    private final DeleteCountryUseCase deleteCountryUseCase;
+    private final RegisterCountryUseCase registerUseCase;
+    private final GetCountryByIdUseCase getByIdUseCase;
+    private final ListCountryUseCase listUseCase;
+    private final UpdateCountryUseCase updateUseCase;
+    private final DeleteCountryUseCase deleteUseCase;
 
-    public CountryController(RegisterCountryUseCase registerCountryUseCase,
-                             GetCountryByIdUseCase getCountryByIdUseCase,
-                             GetCountryByCodeUseCase getCountryByCodeUseCase,
-                             ListCountryUseCase listCountryUseCase,
-                             UpdateCountryUseCase updateCountryUseCase,
-                             DeleteCountryUseCase deleteCountryUseCase) {
-        this.registerCountryUseCase = registerCountryUseCase;
-        this.getCountryByIdUseCase = getCountryByIdUseCase;
-        this.getCountryByCodeUseCase = getCountryByCodeUseCase;
-        this.listCountryUseCase = listCountryUseCase;
-        this.updateCountryUseCase = updateCountryUseCase;
-        this.deleteCountryUseCase = deleteCountryUseCase;
+    public CountryController(
+            RegisterCountryUseCase registerUseCase,
+            GetCountryByIdUseCase getByIdUseCase,
+            ListCountryUseCase listUseCase,
+            UpdateCountryUseCase updateUseCase,
+            DeleteCountryUseCase deleteUseCase
+    ) {
+        this.registerUseCase = registerUseCase;
+        this.getByIdUseCase = getByIdUseCase;
+        this.listUseCase = listUseCase;
+        this.updateUseCase = updateUseCase;
+        this.deleteUseCase = deleteUseCase;
     }
 
     @PostMapping
-    public ResponseEntity<CountryResponse> register(@Valid @RequestBody RegisterCountryRequest request) {
-        RegisterCountryCommand command = new RegisterCountryCommand(
-                request.getNameCountry(),
-                request.getCodeCountry()
-        );
-        CountryResponse response = registerCountryUseCase.execute(command);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+    public ResponseEntity<CountryResponse> create(
+            @Valid
+            @RequestBody CreateCountryRequest request
+    ) {
+        var command =
+                new RegisterCountryCommand(
+                        request.name(),
+                        request.code()
+                );
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CountryResponse> getById(@PathVariable UUID id) {
-        CountryResponse response = getCountryByIdUseCase.execute(id);
-        return ResponseEntity.ok(response);
-    }
+        var response =
+                registerUseCase.execute(command);
 
-    @GetMapping("/code/{code}")
-    public ResponseEntity<CountryResponse> getByCode(@PathVariable String code) {
-        CountryResponse response = getCountryByCodeUseCase.execute(code);
-        return ResponseEntity.ok(response);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<CountryResponse>> listAll() {
-        List<CountryResponse> list = listCountryUseCase.execute();
-        return ResponseEntity.ok(list);
+    public ResponseEntity<List<CountryResponse>> findAll() {
+        return ResponseEntity.ok(
+                listUseCase.execute()
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CountryResponse> findById(
+            @PathVariable UUID id
+    ) {
+        var countryId =
+                new CountryId(id);
+
+        return ResponseEntity.ok(
+                getByIdUseCase.execute(countryId)
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CountryResponse> update(@PathVariable UUID id,
-                                                  @Valid @RequestBody UpdateCountryRequest request) {
-        UpdateCountryCommand command = new UpdateCountryCommand(
-                new CountryId(id),
-                request.getNameCountry(),
-                request.getCodeCountry()
+    public ResponseEntity<CountryResponse> update(
+            @PathVariable UUID id,
+            @Valid
+            @RequestBody UpdateCountryRequest request
+    ) {
+        var command =
+                new UpdateCountryCommand(
+                        new CountryId(id),
+                        request.name(),
+                        request.code()
+                );
+
+        return ResponseEntity.ok(
+                updateUseCase.execute(command)
         );
-        CountryResponse response = updateCountryUseCase.execute(command);
-        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        deleteCountryUseCase.execute(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> delete(
+            @PathVariable UUID id
+    ) {
+        deleteUseCase.execute(
+                new CountryId(id)
+        );
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

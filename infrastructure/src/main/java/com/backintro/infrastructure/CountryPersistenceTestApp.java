@@ -37,21 +37,21 @@ public class CountryPersistenceTestApp {
             System.out.println("País guardado con éxito: " + savedCountry);
 
             // 4. Buscar por ID
-            System.out.println("\n[2] Consultando país por ID: " + savedCountry.getId().value());
-            Optional<Country> foundCountry = countryRepository.findById(savedCountry.getId().value());
+            System.out.println("\n[2] Consultando país por ID: " + savedCountry.id().value());
+            Optional<Country> foundCountry = countryRepository.findById(savedCountry.id().value());
             foundCountry.ifPresent(c -> System.out.println("País recuperado: " + c));
 
             // 5. Buscar por código ISO
             System.out.println("\n[3] Consultando país por código 'CO'...");
             Optional<Country> countryByCode = countryRepository.findByCode("CO");
-            countryByCode.ifPresent(c -> System.out.println("País encontrado por código: " + c.getName()));
+            countryByCode.ifPresent(c -> System.out.println("País encontrado por código: " + c.name()));
 
             // 6. Listar todos
             System.out.println("\n[4] Listando todos los países...");
             List<Country> allCountries = countryRepository.findAll();
             System.out.println("Total países encontrados: " + allCountries.size());
             for (Country c : allCountries) {
-                System.out.println(" - " + c.getName() + " [" + c.getCode() + "]");
+                System.out.println(" - " + c.name() + " [" + c.code() + "]");
             }
 
         } catch (Exception e) {
