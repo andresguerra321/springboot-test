@@ -1,6 +1,6 @@
 package com.backintro.application.empresa.exception;
 
-import com.backintro.application.common.ApplicationException;
+import com.backintro.application.common.exception.ApplicationException;
 
 import java.util.UUID;
 

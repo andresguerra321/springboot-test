@@ -11,6 +11,7 @@ import com.backintro.application.country.usecase.RegisterCountryUseCase;
 import com.backintro.application.country.usecase.UpdateCountryUseCase;
 import com.backintro.infrastructure.country.adapters.in.rest.dtos.RegisterCountryRequest;
 import com.backintro.infrastructure.country.adapters.in.rest.dtos.UpdateCountryRequest;
+import com.backintro.domain.country.model.valueobject.CountryId;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,9 +59,7 @@ public class CountryController {
     public ResponseEntity<CountryResponse> register(@Valid @RequestBody RegisterCountryRequest request) {
         RegisterCountryCommand command = new RegisterCountryCommand(
                 request.getNameCountry(),
-                request.getCodeCountry(),
-                request.getDescription(),
-                request.getTelephonePrefix()
+                request.getCodeCountry()
         );
         CountryResponse response = registerCountryUseCase.execute(command);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -88,12 +87,9 @@ public class CountryController {
     public ResponseEntity<CountryResponse> update(@PathVariable UUID id,
                                                   @Valid @RequestBody UpdateCountryRequest request) {
         UpdateCountryCommand command = new UpdateCountryCommand(
-                id,
+                new CountryId(id),
                 request.getNameCountry(),
-                request.getCodeCountry(),
-                request.getDescription(),
-                request.getTelephonePrefix(),
-                request.getIsActive()
+                request.getCodeCountry()
         );
         CountryResponse response = updateCountryUseCase.execute(command);
         return ResponseEntity.ok(response);

@@ -22,33 +22,25 @@ public class UpdateCountryUseCase {
     }
 
     public CountryResponse execute(UpdateCountryCommand command) {
-        if (command == null || command.getId() == null) {
+        if (command == null || command.id() == null) {
             throw new IllegalArgumentException("El comando y el ID no pueden ser nulos");
         }
 
-        CountryId countryId = new CountryId(command.getId());
+        CountryId countryId = command.id();
         Country country = countryRepository.findById(countryId)
-                .orElseThrow(() -> new CountryNotFoundApplicationException(command.getId()));
+                .orElseThrow(() -> new CountryNotFoundApplicationException("No se encontró el país con ID: " + countryId.value()));
 
-        String newCode = command.getCodeCountry();
+        String newCode = command.code();
         if (newCode != null && !newCode.trim().isEmpty() && !newCode.equalsIgnoreCase(country.code())) {
             if (countryRepository.existsByCode(newCode.trim())) {
                 throw new CountryAlreadyExistsException("Ya existe otro país registrado con el código: " + newCode);
             }
         }
 
-        String nameToUpdate = command.getNameCountry() != null ? command.getNameCountry() : country.name();
+        String nameToUpdate = command.name() != null ? command.name() : country.name();
         String codeToUpdate = newCode != null ? newCode : country.code();
 
         country.update(nameToUpdate, codeToUpdate);
-
-        if (command.getIsActive() != null) {
-            if (Boolean.TRUE.equals(command.getIsActive())) {
-                country.activate();
-            } else {
-                country.deactivate();
-            }
-        }
 
         Country updated = countryRepository.save(country);
         return new CountryResponse(updated.id().value(), updated.name(), updated.code());

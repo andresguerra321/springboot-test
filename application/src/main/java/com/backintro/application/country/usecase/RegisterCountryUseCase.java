@@ -24,8 +24,8 @@ public class RegisterCountryUseCase {
             throw new IllegalArgumentException("El comando no puede ser nulo");
         }
 
-        String name = command.getNameCountry();
-        String code = command.getCodeCountry();
+        String name = command.name();
+        String code = command.code();
 
         if (code != null && !code.trim().isEmpty() && countryRepository.existsByCode(code)) {
             throw new CountryAlreadyExistsException("Ya existe un país registrado con el código: " + code);

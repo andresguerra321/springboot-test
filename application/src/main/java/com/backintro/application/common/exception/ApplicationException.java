@@ -1,4 +1,4 @@
-package com.backintro.application.common;
+package com.backintro.application.common.exception;
 
 public abstract class ApplicationException extends RuntimeException {
 

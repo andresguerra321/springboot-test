@@ -26,7 +26,7 @@ public class DeleteCountryUseCase {
 
         CountryId countryId = new CountryId(id);
         Country country = countryRepository.findById(countryId)
-                .orElseThrow(() -> new CountryNotFoundApplicationException(id));
+                .orElseThrow(() -> new CountryNotFoundApplicationException("No se encontró el país con ID: " + id));
 
         countryRepository.delete(country);
     }

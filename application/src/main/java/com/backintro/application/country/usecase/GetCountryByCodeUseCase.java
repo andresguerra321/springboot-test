@@ -26,7 +26,7 @@ public class GetCountryByCodeUseCase {
         Country country = countryRepository.findAll().stream()
                 .filter(c -> c.code().equalsIgnoreCase(code.trim()))
                 .findFirst()
-                .orElseThrow(() -> new CountryNotFoundApplicationException(code));
+                .orElseThrow(() -> new CountryNotFoundApplicationException("No se encontró el país con el código: " + code));
 
         return new CountryResponse(country.id().value(), country.name(), country.code());
     }

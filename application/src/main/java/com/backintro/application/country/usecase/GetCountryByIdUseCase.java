@@ -26,7 +26,7 @@ public class GetCountryByIdUseCase {
         }
 
         Country country = countryRepository.findById(new CountryId(id))
-                .orElseThrow(() -> new CountryNotFoundApplicationException(id));
+                .orElseThrow(() -> new CountryNotFoundApplicationException("No se encontró el país con ID: " + id));
 
         return new CountryResponse(country.id().value(), country.name(), country.code());
     }

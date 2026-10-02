@@ -1,19 +1,11 @@
 package com.backintro.application.country.exception;
 
-import com.backintro.application.common.ApplicationException;
+import com.backintro.application.common.exception.ApplicationException;
 
-import java.util.UUID;
+public class CountryNotFoundApplicationException
+        extends ApplicationException {
 
-/**
- * Excepción de aplicación cuando no se encuentra un País.
- */
-public class CountryNotFoundApplicationException extends ApplicationException {
-
-    public CountryNotFoundApplicationException(UUID id) {
-        super("No se encontró el país con ID: " + id);
-    }
-
-    public CountryNotFoundApplicationException(String code) {
-        super("No se encontró el país con el código: " + code);
+    public CountryNotFoundApplicationException(String message) {
+        super(message);
     }
 }
