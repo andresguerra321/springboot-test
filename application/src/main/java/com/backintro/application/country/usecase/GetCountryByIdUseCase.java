@@ -6,31 +6,27 @@ import com.backintro.domain.country.model.valueobject.CountryId;
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 public class GetCountryByIdUseCase {
+    private final CountryRepository repository;
 
-    private final CountryRepository countryRepository;
 
     public GetCountryByIdUseCase(
-            CountryRepository countryRepository
+            CountryRepository repository
     ) {
-        this.countryRepository = countryRepository;
+        this.repository = repository;
     }
 
-    public CountryResponse execute(
-            CountryId id
-    ) {
-
-        var country =
-                countryRepository.findById(id)
-                        .orElseThrow(() ->
-                                new CountryNotFoundApplicationException(
-                                        id.value().toString()
-                                )
-                        );
-
+    public CountryResponse execute(CountryId id) {
+        var entity = repository.findById(id)
+                .orElseThrow(() -> new CountryNotFoundApplicationException(id.value().toString()));
         return new CountryResponse(
-                country.id().value(),
-                country.name(),
-                country.code()
+                entity.id().value(),
+                entity.code(),
+                entity.name(),
+                entity.description(),
+                entity.active(),
+                entity.telephonePrefix(),
+                null,
+                null
         );
     }
 }

@@ -53,71 +53,41 @@ public class CountryController {
     }
 
     @PostMapping
-    public ResponseEntity<CountryResponse> create(
-            @Valid
-            @RequestBody CreateCountryRequest request
-    ) {
-        var command =
-                new RegisterCountryCommand(
+    public ResponseEntity<CountryResponse> create(@Valid @RequestBody CreateCountryRequest request) {
+        var command = new RegisterCountryCommand(
+                        request.code(),
                         request.name(),
-                        request.code()
-                );
-
-        var response =
-                registerUseCase.execute(command);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+                        request.description(),
+                        request.telephonePrefix()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(registerUseCase.execute(command));
     }
 
     @GetMapping
     public ResponseEntity<List<CountryResponse>> findAll() {
-        return ResponseEntity.ok(
-                listUseCase.execute()
-        );
+        return ResponseEntity.ok(listUseCase.execute());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CountryResponse> findById(
-            @PathVariable UUID id
-    ) {
-        var countryId =
-                new CountryId(id);
-
-        return ResponseEntity.ok(
-                getByIdUseCase.execute(countryId)
-        );
+    public ResponseEntity<CountryResponse> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(getByIdUseCase.execute(new CountryId(id)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CountryResponse> update(
-            @PathVariable UUID id,
-            @Valid
-            @RequestBody UpdateCountryRequest request
-    ) {
-        var command =
-                new UpdateCountryCommand(
-                        new CountryId(id),
+    public ResponseEntity<CountryResponse> update(@PathVariable UUID id, @Valid @RequestBody UpdateCountryRequest request) {
+        var command = new UpdateCountryCommand(
+                new CountryId(id),
+                        request.code(),
                         request.name(),
-                        request.code()
-                );
-
-        return ResponseEntity.ok(
-                updateUseCase.execute(command)
+                        request.description(),
+                        request.telephonePrefix()
         );
+        return ResponseEntity.ok(updateUseCase.execute(command));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
-            @PathVariable UUID id
-    ) {
-        deleteUseCase.execute(
-                new CountryId(id)
-        );
-
-        return ResponseEntity
-                .noContent()
-                .build();
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        deleteUseCase.execute(new CountryId(id));
+        return ResponseEntity.noContent().build();
     }
 }

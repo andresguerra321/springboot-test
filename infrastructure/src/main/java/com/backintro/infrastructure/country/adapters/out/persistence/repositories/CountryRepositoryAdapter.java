@@ -10,46 +10,37 @@ import com.backintro.infrastructure.country.adapters.out.persistence.entity.Coun
 import com.backintro.infrastructure.country.adapters.out.persistence.mappers.CountryPersistenceMapper;
 
 public class CountryRepositoryAdapter implements CountryRepository {
-
-    private final CountryJpaRepository countryJpaRepository;
+    private final CountryJpaRepository jpaRepository;
     private final CountryPersistenceMapper mapper;
 
-    public CountryRepositoryAdapter(
-            CountryJpaRepository countryJpaRepository,
-            CountryPersistenceMapper mapper
-    ) {
-        this.countryJpaRepository = countryJpaRepository;
+    public CountryRepositoryAdapter(CountryJpaRepository jpaRepository, CountryPersistenceMapper mapper) {
+        this.jpaRepository = jpaRepository;
         this.mapper = mapper;
     }
 
     @Override
-    public Country save(Country country) {
-        CountryJpaEntity entity = mapper.toJpa(country);
-        CountryJpaEntity saved = countryJpaRepository.save(entity);
+    public Country save(Country entity) {
+        CountryJpaEntity jpaEntity = mapper.toJpa(entity);
+        CountryJpaEntity saved = jpaRepository.save(jpaEntity);
         return mapper.toDomain(saved);
     }
 
     @Override
     public Optional<Country> findById(CountryId id) {
-        return countryJpaRepository.findById(id.value())
-                .map(mapper::toDomain);
+        return jpaRepository.findById(id.value()).map(mapper::toDomain);
     }
 
     @Override
     public List<Country> findAll() {
-        return countryJpaRepository.findAll()
-                .stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public boolean existsByCode(String code) {
-        return countryJpaRepository.existsByCode(code);
+        return jpaRepository.existsByCode(code);
     }
-
     @Override
-    public void delete(Country country) {
-        countryJpaRepository.deleteById(country.id().value());
+    public void delete(Country entity) {
+        jpaRepository.deleteById(entity.id().value());
     }
 }

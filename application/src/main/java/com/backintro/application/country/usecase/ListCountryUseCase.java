@@ -6,26 +6,28 @@ import com.backintro.application.country.dto.CountryResponse;
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 public class ListCountryUseCase {
+    private final CountryRepository repository;
 
-    private final CountryRepository countryRepository;
 
     public ListCountryUseCase(
-            CountryRepository countryRepository
+            CountryRepository repository
     ) {
-        this.countryRepository = countryRepository;
+        this.repository = repository;
     }
 
     public List<CountryResponse> execute() {
-
-        return countryRepository.findAll()
+        return repository.findAll()
                 .stream()
-                .map(country ->
-                        new CountryResponse(
-                                country.id().value(),
-                                country.name(),
-                                country.code()
-                        )
-                )
+                .map(entity -> new CountryResponse(
+                entity.id().value(),
+                entity.code(),
+                entity.name(),
+                entity.description(),
+                entity.active(),
+                entity.telephonePrefix(),
+                null,
+                null
+                ))
                 .toList();
     }
 }

@@ -1,29 +1,14 @@
 package com.backintro.domain.clinicalrecord.port.repository;
 
-import com.backintro.domain.clinicalrecord.model.aggregate.ClinicalRecord;
-import com.backintro.domain.clinicalrecord.model.aggregate.Encounter;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
+import com.backintro.domain.clinicalrecord.model.aggregate.ClinicalRecord;
+import com.backintro.domain.clinicalrecord.model.valueobject.ClinicalRecordId;
 
 public interface ClinicalRecordRepository {
-
-    ClinicalRecord save(ClinicalRecord clinicalRecord);
-
-    Optional<ClinicalRecord> findById(UUID id);
-
-    Optional<ClinicalRecord> findByPatientId(UUID patientId);
-
+    ClinicalRecord save(ClinicalRecord entity);
+    Optional<ClinicalRecord> findById(ClinicalRecordId id);
     List<ClinicalRecord> findAll();
-
-    void deleteById(UUID id);
-
-    boolean existsById(UUID id);
-
-    Encounter saveEncounter(Encounter encounter);
-
-    Optional<Encounter> findEncounterById(UUID encounterId);
-
-    List<Encounter> findEncountersByClinicalRecordId(UUID clinicalRecordId);
+    void delete(ClinicalRecord entity);
 }

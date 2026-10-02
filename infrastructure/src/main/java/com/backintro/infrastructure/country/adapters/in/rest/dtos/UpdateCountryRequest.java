@@ -1,16 +1,16 @@
 package com.backintro.infrastructure.country.adapters.in.rest.dtos;
 
+import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UpdateCountryRequest(
+        String code,
 
         @NotBlank(message = "name is required")
         String name,
 
-        @NotBlank(message = "code is required")
-        @Size(min = 2, max = 3, message = "code must have between 2 and 3 characters")
-        String code
+        String description,
 
-) {
-}
+        String telephonePrefix
+) {}

@@ -1,0 +1,31 @@
+package com.backintro.application.providermodelai.usecase;
+
+import java.util.List;
+
+import com.backintro.application.providermodelai.dto.ProviderModelAiResponse;
+import com.backintro.domain.providermodelai.port.repository.ProviderModelAiRepository;
+
+public class ListProviderModelAiUseCase {
+    private final ProviderModelAiRepository repository;
+
+    public ListProviderModelAiUseCase(
+            ProviderModelAiRepository repository
+    ) {
+        this.repository = repository;
+    }
+
+    public List<ProviderModelAiResponse> execute() {
+        return repository.findAll()
+                .stream()
+                .map(entity -> new ProviderModelAiResponse(
+                entity.id().value(),
+                entity.nameProviderAi(),
+                entity.razonSocial(),
+                entity.sitioWeb(),
+                entity.active(),
+                null,
+                null
+                ))
+                .toList();
+    }
+}

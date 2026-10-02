@@ -2,6 +2,7 @@ package com.backintro.domain.country.model.aggregate;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 import com.backintro.domain.common.model.AggregateRoot;
 import com.backintro.domain.country.event.CountryRegisteredEvent;
@@ -10,66 +11,86 @@ import com.backintro.domain.country.model.valueobject.CountryId;
 
 public class Country extends AggregateRoot {
     private final CountryId id;
-    private String name;
     private String code;
+    private String name;
+    private String description;
     private boolean active;
+    private String telephonePrefix;
 
     private Country(
         CountryId id,
-        String name,
         String code,
-        boolean active) {
+        String name,
+        String description,
+        boolean active,
+        String telephonePrefix) {
 
         this.id = Objects.requireNonNull(id, "id must not be null");
+        this.code = code;
         this.name = Objects.requireNonNull(name, "name must not be null");
-        this.code = Objects.requireNonNull(code, "code must not be null");
+        this.description = description;
         this.active = active;
+        this.telephonePrefix = telephonePrefix;
     }
 
     public static Country register(
+        String code,
         String name,
-        String code) {
+        String description,
+        String telephonePrefix) {
 
         CountryId id = CountryId.generate();
 
-        Country country = new Country(
+        Country entity = new Country(
             id,
-            name,
             code,
-            true);
+            name,
+            description,
+            true,
+            telephonePrefix);
 
-        country.recordEvent(
+        entity.recordEvent(
             new CountryRegisteredEvent(
                 id,
                 LocalDateTime.now()));
 
-        return country;
+        return entity;
     }
 
     public static Country restore(
         CountryId id,
-        String name,
         String code,
-        boolean active) {
+        String name,
+        String description,
+        boolean active,
+        String telephonePrefix) {
         return new Country(
             id,
-            name,
             code,
-            active);
+            name,
+            description,
+            active,
+            telephonePrefix);
     }
 
     public void update(
+        String code,
         String name,
-        String code) {
+        String description,
+        String telephonePrefix) {
 
+        this.code = code;
         this.name = Objects.requireNonNull(name);
-        this.code = Objects.requireNonNull(code);
+        this.description = description;
+        this.telephonePrefix = telephonePrefix;
 
         recordEvent(
             new CountryUpdatedEvent(
                 this.id,
-                this.name,
                 this.code,
+                this.name,
+                this.description,
+                this.telephonePrefix,
                 LocalDateTime.now()));
     }
 
@@ -77,33 +98,40 @@ public class Country extends AggregateRoot {
         return id;
     }
 
-    public String name() {
-        return name;
-    }
-
     public String code() {
         return code;
     }
-
+    public String name() {
+        return name;
+    }
+    public String description() {
+        return description;
+    }
     public boolean active() {
         return active;
     }
-
+    public String telephonePrefix() {
+        return telephonePrefix;
+    }
     // Alias para compatibilidad con mappers y frameworks
     public CountryId getId() {
         return id();
     }
 
-    public String getName() {
-        return name();
-    }
-
     public String getCode() {
         return code();
     }
-
+    public String getName() {
+        return name();
+    }
+    public String getDescription() {
+        return description();
+    }
     public boolean isActive() {
         return active();
+    }
+    public String getTelephonePrefix() {
+        return telephonePrefix();
     }
 
     public void deactivate() {
@@ -113,13 +141,12 @@ public class Country extends AggregateRoot {
     public void activate() {
         this.active = true;
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Country country = (Country) o;
-        return Objects.equals(id, country.id);
+        Country that = (Country) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
@@ -131,9 +158,6 @@ public class Country extends AggregateRoot {
     public String toString() {
         return "Country{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", active=" + active +
                 '}';
     }
 }

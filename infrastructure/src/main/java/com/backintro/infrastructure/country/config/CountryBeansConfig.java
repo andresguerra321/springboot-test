@@ -23,44 +23,31 @@ public class CountryBeansConfig {
 
     @Bean
     public CountryRepository countryRepository(CountryJpaRepository repository, CountryPersistenceMapper mapper) {
-        return new CountryRepositoryAdapter(
-                repository,
-                mapper
-        );
+        return new CountryRepositoryAdapter(repository, mapper);
     }
 
     @Bean
     public RegisterCountryUseCase registerCountryUseCase(CountryRepository repository) {
-        return new RegisterCountryUseCase(
-                repository
-        );
+        return new RegisterCountryUseCase(repository);
     }
 
     @Bean
     public GetCountryByIdUseCase getCountryByIdUseCase(CountryRepository repository) {
-        return new GetCountryByIdUseCase(
-                repository
-        );
+        return new GetCountryByIdUseCase(repository);
     }
 
     @Bean
     public ListCountryUseCase listCountryUseCase(CountryRepository repository) {
-        return new ListCountryUseCase(
-                repository
-        );
+        return new ListCountryUseCase(repository);
     }
 
     @Bean
     public UpdateCountryUseCase updateCountryUseCase(CountryRepository repository) {
-        return new UpdateCountryUseCase(
-                repository
-        );
+        return new UpdateCountryUseCase(repository);
     }
 
     @Bean
     public DeleteCountryUseCase deleteCountryUseCase(CountryRepository repository) {
-        return new DeleteCountryUseCase(
-                repository
-        );
+        return new DeleteCountryUseCase(repository);
     }
 }

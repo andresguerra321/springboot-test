@@ -1,27 +1,14 @@
 package com.backintro.domain.professional.port.repository;
 
-import com.backintro.domain.professional.model.aggregate.Professional;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-/**
- * Puerto de salida para el repositorio de Professional.
- */
+import com.backintro.domain.professional.model.aggregate.Professional;
+import com.backintro.domain.professional.model.valueobject.ProfessionalId;
+
 public interface ProfessionalRepository {
-
-    Professional save(Professional professional);
-
-    Optional<Professional> findById(UUID id);
-
-    Optional<Professional> findByDocumentTypeIdAndDocumentNumber(UUID documentTypeId, String documentNumber);
-
+    Professional save(Professional entity);
+    Optional<Professional> findById(ProfessionalId id);
     List<Professional> findAll();
-
-    List<Professional> findAllActive();
-
-    void deleteById(UUID id);
-
-    boolean existsById(UUID id);
+    void delete(Professional entity);
 }

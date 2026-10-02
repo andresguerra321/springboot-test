@@ -1,0 +1,34 @@
+package com.backintro.infrastructure.study.adapters.out.persistence.mappers;
+
+import com.backintro.domain.study.model.aggregate.Study;
+import com.backintro.domain.study.model.valueobject.StudyId;
+import com.backintro.infrastructure.study.adapters.out.persistence.entity.StudyJpaEntity;
+
+public class StudyPersistenceMapper {
+
+    public StudyJpaEntity toJpa(Study domain) {
+
+        if (domain == null) {
+            return null;
+        }
+
+        StudyJpaEntity jpa = new StudyJpaEntity();
+
+        jpa.setId(domain.id().value());
+        jpa.setName(domain.name());
+
+        return jpa;
+    }
+
+    public Study toDomain(StudyJpaEntity jpa) {
+
+        if (jpa == null) {
+            return null;
+        }
+
+        return Study.restore(
+                new StudyId(jpa.getId()),
+                jpa.getName()
+        );
+    }
+}

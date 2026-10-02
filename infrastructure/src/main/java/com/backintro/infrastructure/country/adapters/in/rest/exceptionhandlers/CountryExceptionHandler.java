@@ -15,9 +15,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Manejador global de excepciones para los endpoints REST de Country.
- */
 @RestControllerAdvice(basePackages = "com.backintro.infrastructure.country.adapters.in.rest")
 public class CountryExceptionHandler {
 
@@ -26,7 +23,7 @@ public class CountryExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", HttpStatus.NOT_FOUND.value());
-        body.put("error", "País no encontrado");
+        body.put("error", "Registro no encontrado");
         body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
@@ -36,7 +33,7 @@ public class CountryExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", HttpStatus.CONFLICT.value());
-        body.put("error", "País ya existente");
+        body.put("error", "Registro ya existente");
         body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
@@ -61,7 +58,7 @@ public class CountryExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("error", "Error de validación en la petición");
+        body.put("error", "Error de validacion en la peticion");
         body.put("details", fieldErrors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }

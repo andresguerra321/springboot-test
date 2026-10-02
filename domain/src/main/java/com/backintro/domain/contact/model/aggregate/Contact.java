@@ -4,72 +4,173 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Agregado raíz para Contacto.
- */
-public class Contact {
+import com.backintro.domain.common.model.AggregateRoot;
+import com.backintro.domain.contact.event.ContactRegisteredEvent;
+import com.backintro.domain.contact.event.ContactUpdatedEvent;
+import com.backintro.domain.contact.model.valueobject.ContactId;
 
-    private UUID id;
+public class Contact extends AggregateRoot {
+    private final ContactId id;
     private String fullName;
     private String email;
     private String notes;
     private UUID cityId;
-    private LocalDateTime createdAt;
     private UUID createdBy;
-    private LocalDateTime updatedAt;
     private UUID updatedBy;
 
-    public Contact() {}
+    private Contact(
+        ContactId id,
+        String fullName,
+        String email,
+        String notes,
+        UUID cityId,
+        UUID createdBy,
+        UUID updatedBy) {
 
-    public Contact(UUID id, String fullName, String email, String notes, UUID cityId,
-                   LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy) {
-        this.id = id;
-        this.fullName = fullName;
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.fullName = Objects.requireNonNull(fullName, "fullName must not be null");
         this.email = email;
         this.notes = notes;
         this.cityId = cityId;
-        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
         this.createdBy = createdBy;
-        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
         this.updatedBy = updatedBy;
     }
 
-    public static Contact create(String fullName, String email, String notes, UUID cityId, UUID createdBy) {
-        LocalDateTime now = LocalDateTime.now();
-        return new Contact(UUID.randomUUID(), fullName, email, notes, cityId, now, createdBy, now, null);
+    public static Contact register(
+        String fullName,
+        String email,
+        String notes,
+        UUID cityId,
+        UUID createdBy,
+        UUID updatedBy) {
+
+        ContactId id = ContactId.generate();
+
+        Contact entity = new Contact(
+            id,
+            fullName,
+            email,
+            notes,
+            cityId,
+            createdBy,
+            updatedBy);
+
+        entity.recordEvent(
+            new ContactRegisteredEvent(
+                id,
+                LocalDateTime.now()));
+
+        return entity;
     }
 
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
-    public UUID getCityId() { return cityId; }
-    public void setCityId(UUID cityId) { this.cityId = cityId; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public UUID getCreatedBy() { return createdBy; }
-    public void setCreatedBy(UUID createdBy) { this.createdBy = createdBy; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-    public UUID getUpdatedBy() { return updatedBy; }
-    public void setUpdatedBy(UUID updatedBy) { this.updatedBy = updatedBy; }
+    public static Contact restore(
+        ContactId id,
+        String fullName,
+        String email,
+        String notes,
+        UUID cityId,
+        UUID createdBy,
+        UUID updatedBy) {
+        return new Contact(
+            id,
+            fullName,
+            email,
+            notes,
+            cityId,
+            createdBy,
+            updatedBy);
+    }
+
+    public void update(
+        String fullName,
+        String email,
+        String notes,
+        UUID cityId,
+        UUID createdBy,
+        UUID updatedBy) {
+
+        this.fullName = Objects.requireNonNull(fullName);
+        this.email = email;
+        this.notes = notes;
+        this.cityId = cityId;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+
+        recordEvent(
+            new ContactUpdatedEvent(
+                this.id,
+                this.fullName,
+                this.email,
+                this.notes,
+                this.cityId,
+                this.createdBy,
+                this.updatedBy,
+                LocalDateTime.now()));
+    }
+
+    public ContactId id() {
+        return id;
+    }
+
+    public String fullName() {
+        return fullName;
+    }
+    public String email() {
+        return email;
+    }
+    public String notes() {
+        return notes;
+    }
+    public UUID cityId() {
+        return cityId;
+    }
+    public UUID createdBy() {
+        return createdBy;
+    }
+    public UUID updatedBy() {
+        return updatedBy;
+    }
+    // Alias para compatibilidad con mappers y frameworks
+    public ContactId getId() {
+        return id();
+    }
+
+    public String getFullName() {
+        return fullName();
+    }
+    public String getEmail() {
+        return email();
+    }
+    public String getNotes() {
+        return notes();
+    }
+    public UUID getCityId() {
+        return cityId();
+    }
+    public UUID getCreatedBy() {
+        return createdBy();
+    }
+    public UUID getUpdatedBy() {
+        return updatedBy();
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(id, ((Contact) o).id);
+        Contact that = (Contact) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Override
     public String toString() {
-        return "Contact{id=" + id + ", fullName='" + fullName + "'}";
+        return "Contact{" +
+                "id=" + id +
+                '}';
     }
 }

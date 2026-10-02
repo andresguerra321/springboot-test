@@ -1,117 +1,336 @@
 package com.backintro.domain.patient.model.aggregate;
 
-import com.backintro.domain.patient.model.valueobject.DocumentNumber;
-import com.backintro.domain.patient.model.valueobject.PersonName;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Agregado raíz para Paciente.
- * POJO puro sin anotaciones de frameworks.
- */
-public class Patient {
+import com.backintro.domain.common.model.AggregateRoot;
+import com.backintro.domain.patient.event.PatientRegisteredEvent;
+import com.backintro.domain.patient.event.PatientUpdatedEvent;
+import com.backintro.domain.patient.model.valueobject.PatientId;
 
-    private UUID id;
+public class Patient extends AggregateRoot {
+    private final PatientId id;
     private UUID documentTypeId;
-    private DocumentNumber documentNumber;
-    private PersonName personName;
-    private LocalDate birthDate;
+    private String documentNumber;
+    private String firstName;
+    private String middleName;
+    private String lastName;
+    private String secondLastName;
+    private java.time.LocalDate birthDate;
     private UUID biologicalSexId;
-    private UUID genderIdentityId;
+    private UUID genderIdentity;
     private String email;
     private String phone;
     private String address;
-    private Boolean active;
-    private LocalDateTime createdAt;
-    private UUID createdBy;
-    private LocalDateTime updatedAt;
-    private UUID updatedBy;
+    private boolean active;
     private UUID cityId;
+    private UUID createdBy;
+    private UUID updatedBy;
 
-    public Patient() {}
+    private Patient(
+        PatientId id,
+        UUID documentTypeId,
+        String documentNumber,
+        String firstName,
+        String middleName,
+        String lastName,
+        String secondLastName,
+        java.time.LocalDate birthDate,
+        UUID biologicalSexId,
+        UUID genderIdentity,
+        String email,
+        String phone,
+        String address,
+        boolean active,
+        UUID cityId,
+        UUID createdBy,
+        UUID updatedBy) {
 
-    public Patient(UUID id, UUID documentTypeId, DocumentNumber documentNumber, PersonName personName,
-                   LocalDate birthDate, UUID biologicalSexId, UUID genderIdentityId,
-                   String email, String phone, String address, Boolean active,
-                   LocalDateTime createdAt, UUID createdBy, LocalDateTime updatedAt, UUID updatedBy, UUID cityId) {
-        this.id = id;
-        this.documentTypeId = documentTypeId;
-        this.documentNumber = documentNumber;
-        this.personName = personName;
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.documentTypeId = Objects.requireNonNull(documentTypeId, "documentTypeId must not be null");
+        this.documentNumber = Objects.requireNonNull(documentNumber, "documentNumber must not be null");
+        this.firstName = Objects.requireNonNull(firstName, "firstName must not be null");
+        this.middleName = middleName;
+        this.lastName = Objects.requireNonNull(lastName, "lastName must not be null");
+        this.secondLastName = secondLastName;
         this.birthDate = birthDate;
-        this.biologicalSexId = biologicalSexId;
-        this.genderIdentityId = genderIdentityId;
+        this.biologicalSexId = Objects.requireNonNull(biologicalSexId, "biologicalSexId must not be null");
+        this.genderIdentity = genderIdentity;
         this.email = email;
         this.phone = phone;
         this.address = address;
-        this.active = active != null ? active : Boolean.TRUE;
-        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
-        this.createdBy = createdBy;
-        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
-        this.updatedBy = updatedBy;
+        this.active = active;
         this.cityId = cityId;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
     }
 
-    public static Patient create(UUID documentTypeId, String documentNumber,
-                                 String firstName, String middleName, String lastName, String secondLastName,
-                                 LocalDate birthDate, UUID biologicalSexId, UUID genderIdentityId,
-                                 String email, String phone, String address, UUID cityId, UUID createdBy) {
-        LocalDateTime now = LocalDateTime.now();
-        return new Patient(UUID.randomUUID(), documentTypeId,
-                new DocumentNumber(documentNumber),
-                new PersonName(firstName, middleName, lastName, secondLastName),
-                birthDate, biologicalSexId, genderIdentityId,
-                email, phone, address, Boolean.TRUE, now, createdBy, now, null, cityId);
+    public static Patient register(
+        UUID documentTypeId,
+        String documentNumber,
+        String firstName,
+        String middleName,
+        String lastName,
+        String secondLastName,
+        java.time.LocalDate birthDate,
+        UUID biologicalSexId,
+        UUID genderIdentity,
+        String email,
+        String phone,
+        String address,
+        UUID cityId,
+        UUID createdBy,
+        UUID updatedBy) {
+
+        PatientId id = PatientId.generate();
+
+        Patient entity = new Patient(
+            id,
+            documentTypeId,
+            documentNumber,
+            firstName,
+            middleName,
+            lastName,
+            secondLastName,
+            birthDate,
+            biologicalSexId,
+            genderIdentity,
+            email,
+            phone,
+            address,
+            true,
+            cityId,
+            createdBy,
+            updatedBy);
+
+        entity.recordEvent(
+            new PatientRegisteredEvent(
+                id,
+                LocalDateTime.now()));
+
+        return entity;
     }
 
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-    public UUID getDocumentTypeId() { return documentTypeId; }
-    public void setDocumentTypeId(UUID documentTypeId) { this.documentTypeId = documentTypeId; }
-    public DocumentNumber getDocumentNumber() { return documentNumber; }
-    public void setDocumentNumber(DocumentNumber documentNumber) { this.documentNumber = documentNumber; }
-    public PersonName getPersonName() { return personName; }
-    public void setPersonName(PersonName personName) { this.personName = personName; }
-    public LocalDate getBirthDate() { return birthDate; }
-    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
-    public UUID getBiologicalSexId() { return biologicalSexId; }
-    public void setBiologicalSexId(UUID biologicalSexId) { this.biologicalSexId = biologicalSexId; }
-    public UUID getGenderIdentityId() { return genderIdentityId; }
-    public void setGenderIdentityId(UUID genderIdentityId) { this.genderIdentityId = genderIdentityId; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
-    public Boolean getActive() { return active; }
-    public void setActive(Boolean active) { this.active = active; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public UUID getCreatedBy() { return createdBy; }
-    public void setCreatedBy(UUID createdBy) { this.createdBy = createdBy; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-    public UUID getUpdatedBy() { return updatedBy; }
-    public void setUpdatedBy(UUID updatedBy) { this.updatedBy = updatedBy; }
-    public UUID getCityId() { return cityId; }
-    public void setCityId(UUID cityId) { this.cityId = cityId; }
+    public static Patient restore(
+        PatientId id,
+        UUID documentTypeId,
+        String documentNumber,
+        String firstName,
+        String middleName,
+        String lastName,
+        String secondLastName,
+        java.time.LocalDate birthDate,
+        UUID biologicalSexId,
+        UUID genderIdentity,
+        String email,
+        String phone,
+        String address,
+        boolean active,
+        UUID cityId,
+        UUID createdBy,
+        UUID updatedBy) {
+        return new Patient(
+            id,
+            documentTypeId,
+            documentNumber,
+            firstName,
+            middleName,
+            lastName,
+            secondLastName,
+            birthDate,
+            biologicalSexId,
+            genderIdentity,
+            email,
+            phone,
+            address,
+            active,
+            cityId,
+            createdBy,
+            updatedBy);
+    }
 
+    public void update(
+        UUID documentTypeId,
+        String documentNumber,
+        String firstName,
+        String middleName,
+        String lastName,
+        String secondLastName,
+        java.time.LocalDate birthDate,
+        UUID biologicalSexId,
+        UUID genderIdentity,
+        String email,
+        String phone,
+        String address,
+        UUID cityId,
+        UUID createdBy,
+        UUID updatedBy) {
+
+        this.documentTypeId = Objects.requireNonNull(documentTypeId);
+        this.documentNumber = Objects.requireNonNull(documentNumber);
+        this.firstName = Objects.requireNonNull(firstName);
+        this.middleName = middleName;
+        this.lastName = Objects.requireNonNull(lastName);
+        this.secondLastName = secondLastName;
+        this.birthDate = birthDate;
+        this.biologicalSexId = Objects.requireNonNull(biologicalSexId);
+        this.genderIdentity = genderIdentity;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.cityId = cityId;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+
+        recordEvent(
+            new PatientUpdatedEvent(
+                this.id,
+                this.documentTypeId,
+                this.documentNumber,
+                this.firstName,
+                this.middleName,
+                this.lastName,
+                this.secondLastName,
+                this.birthDate,
+                this.biologicalSexId,
+                this.genderIdentity,
+                this.email,
+                this.phone,
+                this.address,
+                this.cityId,
+                this.createdBy,
+                this.updatedBy,
+                LocalDateTime.now()));
+    }
+
+    public PatientId id() {
+        return id;
+    }
+
+    public UUID documentTypeId() {
+        return documentTypeId;
+    }
+    public String documentNumber() {
+        return documentNumber;
+    }
+    public String firstName() {
+        return firstName;
+    }
+    public String middleName() {
+        return middleName;
+    }
+    public String lastName() {
+        return lastName;
+    }
+    public String secondLastName() {
+        return secondLastName;
+    }
+    public java.time.LocalDate birthDate() {
+        return birthDate;
+    }
+    public UUID biologicalSexId() {
+        return biologicalSexId;
+    }
+    public UUID genderIdentity() {
+        return genderIdentity;
+    }
+    public String email() {
+        return email;
+    }
+    public String phone() {
+        return phone;
+    }
+    public String address() {
+        return address;
+    }
+    public boolean active() {
+        return active;
+    }
+    public UUID cityId() {
+        return cityId;
+    }
+    public UUID createdBy() {
+        return createdBy;
+    }
+    public UUID updatedBy() {
+        return updatedBy;
+    }
+    // Alias para compatibilidad con mappers y frameworks
+    public PatientId getId() {
+        return id();
+    }
+
+    public UUID getDocumentTypeId() {
+        return documentTypeId();
+    }
+    public String getDocumentNumber() {
+        return documentNumber();
+    }
+    public String getFirstName() {
+        return firstName();
+    }
+    public String getMiddleName() {
+        return middleName();
+    }
+    public String getLastName() {
+        return lastName();
+    }
+    public String getSecondLastName() {
+        return secondLastName();
+    }
+    public java.time.LocalDate getBirthDate() {
+        return birthDate();
+    }
+    public UUID getBiologicalSexId() {
+        return biologicalSexId();
+    }
+    public UUID getGenderIdentity() {
+        return genderIdentity();
+    }
+    public String getEmail() {
+        return email();
+    }
+    public String getPhone() {
+        return phone();
+    }
+    public String getAddress() {
+        return address();
+    }
+    public UUID getCityId() {
+        return cityId();
+    }
+    public UUID getCreatedBy() {
+        return createdBy();
+    }
+    public UUID getUpdatedBy() {
+        return updatedBy();
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public void activate() {
+        this.active = true;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(id, ((Patient) o).id);
+        Patient that = (Patient) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Override
     public String toString() {
-        return "Patient{id=" + id + ", documentNumber=" + documentNumber + ", name=" + personName + "}";
+        return "Patient{" +
+                "id=" + id +
+                '}';
     }
 }

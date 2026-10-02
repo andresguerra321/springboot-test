@@ -1,6 +1,5 @@
 package com.backintro.infrastructure.adapters.outbound.persistence.repositories;
 
-import com.backintro.application.ports.CountryRepositoryPort;
 import com.backintro.domain.country.model.aggregate.Country;
 import com.backintro.domain.country.model.valueobject.CountryId;
 import com.backintro.domain.country.port.repository.CountryRepository;
@@ -17,9 +16,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Adaptador de persistencia para el prototipo Java SE que implementa CountryRepository y CountryRepositoryPort.
+ * Adaptador de persistencia para el prototipo Java SE que implementa CountryRepository.
  */
-public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRepositoryPort {
+public class CountryJpaRepositoryAdapter implements CountryRepository {
 
     private final EntityManagerFactory entityManagerFactory;
     private final EntityManager externalEntityManager;

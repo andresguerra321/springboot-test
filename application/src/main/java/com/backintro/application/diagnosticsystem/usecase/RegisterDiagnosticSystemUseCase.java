@@ -1,0 +1,41 @@
+package com.backintro.application.diagnosticsystem.usecase;
+
+import com.backintro.application.diagnosticsystem.command.RegisterDiagnosticSystemCommand;
+import com.backintro.application.diagnosticsystem.dto.DiagnosticSystemResponse;
+import com.backintro.domain.diagnosticsystem.model.aggregate.DiagnosticSystem;
+import com.backintro.domain.diagnosticsystem.port.repository.DiagnosticSystemRepository;
+
+public class RegisterDiagnosticSystemUseCase {
+
+    private final DiagnosticSystemRepository repository;
+
+    public RegisterDiagnosticSystemUseCase(
+            DiagnosticSystemRepository repository
+    ) {
+        this.repository = repository;
+    }
+
+    public DiagnosticSystemResponse execute(
+            RegisterDiagnosticSystemCommand command
+    ) {
+
+        DiagnosticSystem entity = DiagnosticSystem.register(
+                command.code(),
+                command.name(),
+                command.version()
+        );
+
+        DiagnosticSystem saved =
+                repository.save(entity);
+
+        return new DiagnosticSystemResponse(
+                saved.id().value(),
+                saved.code(),
+                saved.name(),
+                saved.active(),
+                saved.version(),
+                null,
+                null
+        );
+    }
+}

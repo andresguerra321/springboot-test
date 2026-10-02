@@ -12,15 +12,7 @@ public record CountryDeletedEvent(
 ) implements DomainEvent {
 
     public CountryDeletedEvent {
-
-        Objects.requireNonNull(
-            id,
-            "id must not be null"
-        );
-
-        Objects.requireNonNull(
-            occurredOn,
-            "occurredOn must not be null"
-        );
+        Objects.requireNonNull(id, "id must not be null");
+        Objects.requireNonNull(occurredOn, "occurredOn must not be null");
     }
 }

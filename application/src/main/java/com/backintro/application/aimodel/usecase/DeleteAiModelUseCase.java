@@ -1,0 +1,23 @@
+package com.backintro.application.aimodel.usecase;
+
+import java.time.LocalDateTime;
+
+import com.backintro.application.aimodel.exception.AiModelNotFoundApplicationException;
+import com.backintro.domain.aimodel.event.AiModelDeletedEvent;
+import com.backintro.domain.aimodel.model.valueobject.AiModelId;
+import com.backintro.domain.aimodel.port.repository.AiModelRepository;
+
+public class DeleteAiModelUseCase {
+    private final AiModelRepository repository;
+
+    public DeleteAiModelUseCase(AiModelRepository repository) {
+        this.repository = repository;
+    }
+
+    public AiModelDeletedEvent execute(AiModelId id) {
+        var entity = repository.findById(id)
+                .orElseThrow(() -> new AiModelNotFoundApplicationException(id.value().toString()));
+        repository.delete(entity);
+        return new AiModelDeletedEvent(id, LocalDateTime.now());
+    }
+}

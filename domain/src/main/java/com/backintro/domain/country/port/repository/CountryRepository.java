@@ -7,13 +7,10 @@ import com.backintro.domain.country.model.aggregate.Country;
 import com.backintro.domain.country.model.valueobject.CountryId;
 
 public interface CountryRepository {
-    Country save(Country country);
-
+    Country save(Country entity);
     Optional<Country> findById(CountryId id);
-
     List<Country> findAll();
-
     boolean existsByCode(String code);
 
-    void delete(Country country);
+    void delete(Country entity);
 }

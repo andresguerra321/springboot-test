@@ -6,41 +6,36 @@ import com.backintro.application.country.exception.CountryNotFoundApplicationExc
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 public class UpdateCountryUseCase {
+    private final CountryRepository repository;
 
-    private final CountryRepository countryRepository;
 
     public UpdateCountryUseCase(
-            CountryRepository countryRepository
+            CountryRepository repository
     ) {
-        this.countryRepository = countryRepository;
+        this.repository = repository;
     }
 
-    public CountryResponse execute(
-            UpdateCountryCommand command
-    ) {
+    public CountryResponse execute(UpdateCountryCommand command) {
+        var entity = repository.findById(command.id())
+                .orElseThrow(() -> new CountryNotFoundApplicationException(command.id().value().toString()));
 
-        var country =
-                countryRepository.findById(command.id())
-                        .orElseThrow(() ->
-                                new CountryNotFoundApplicationException(
-                                        command.id()
-                                                .value()
-                                                .toString()
-                                )
-                        );
-
-        country.update(
+        entity.update(
+                command.code(),
                 command.name(),
-                command.code()
+                command.description(),
+                command.telephonePrefix()
         );
 
-        var updated =
-                countryRepository.save(country);
-
+        var updated = repository.save(entity);
         return new CountryResponse(
                 updated.id().value(),
+                updated.code(),
                 updated.name(),
-                updated.code()
+                updated.description(),
+                updated.active(),
+                updated.telephonePrefix(),
+                null,
+                null
         );
     }
 }

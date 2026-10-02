@@ -7,32 +7,26 @@ import com.backintro.infrastructure.country.adapters.out.persistence.entity.Coun
 public class CountryPersistenceMapper {
 
     public CountryJpaEntity toJpa(Country domain) {
-
-        if (domain == null) {
-            return null;
-        }
-
+        if (domain == null) return null;
         CountryJpaEntity jpa = new CountryJpaEntity();
-
         jpa.setId(domain.id().value());
-        jpa.setName(domain.name());
         jpa.setCode(domain.code());
+        jpa.setName(domain.name());
+        jpa.setDescription(domain.description());
         jpa.setActive(domain.active());
-
+        jpa.setTelephonePrefix(domain.telephonePrefix());
         return jpa;
     }
 
     public Country toDomain(CountryJpaEntity jpa) {
-
-        if (jpa == null) {
-            return null;
-        }
-
+        if (jpa == null) return null;
         return Country.restore(
                 new CountryId(jpa.getId()),
-                jpa.getName(),
                 jpa.getCode(),
-                jpa.isActive()
+                jpa.getName(),
+                jpa.getDescription(),
+                jpa.isActive(),
+                jpa.getTelephonePrefix()
         );
     }
 }

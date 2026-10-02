@@ -4,84 +4,205 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Agregado raíz para Profesional de salud.
- * POJO puro sin anotaciones de frameworks.
- */
-public class Professional {
+import com.backintro.domain.common.model.AggregateRoot;
+import com.backintro.domain.professional.event.ProfessionalRegisteredEvent;
+import com.backintro.domain.professional.event.ProfessionalUpdatedEvent;
+import com.backintro.domain.professional.model.valueobject.ProfessionalId;
 
-    private UUID id;
+public class Professional extends AggregateRoot {
+    private final ProfessionalId id;
     private UUID documentTypeId;
     private String documentNumber;
     private String firstName;
     private String lastName;
     private UUID professionalTypeId;
     private String licenseNumber;
-    private Boolean active;
     private UUID cityId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private boolean active;
 
-    public Professional() {}
+    private Professional(
+        ProfessionalId id,
+        UUID documentTypeId,
+        String documentNumber,
+        String firstName,
+        String lastName,
+        UUID professionalTypeId,
+        String licenseNumber,
+        UUID cityId,
+        boolean active) {
 
-    public Professional(UUID id, UUID documentTypeId, String documentNumber, String firstName, String lastName,
-                        UUID professionalTypeId, String licenseNumber, Boolean active, UUID cityId,
-                        LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.documentTypeId = documentTypeId;
-        this.documentNumber = documentNumber;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.professionalTypeId = professionalTypeId;
+        this.id = Objects.requireNonNull(id, "id must not be null");
+        this.documentTypeId = Objects.requireNonNull(documentTypeId, "documentTypeId must not be null");
+        this.documentNumber = Objects.requireNonNull(documentNumber, "documentNumber must not be null");
+        this.firstName = Objects.requireNonNull(firstName, "firstName must not be null");
+        this.lastName = Objects.requireNonNull(lastName, "lastName must not be null");
+        this.professionalTypeId = Objects.requireNonNull(professionalTypeId, "professionalTypeId must not be null");
         this.licenseNumber = licenseNumber;
-        this.active = active != null ? active : Boolean.TRUE;
         this.cityId = cityId;
-        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
-        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
+        this.active = active;
     }
 
-    public static Professional create(UUID documentTypeId, String documentNumber, String firstName, String lastName,
-                                      UUID professionalTypeId, String licenseNumber, UUID cityId) {
-        LocalDateTime now = LocalDateTime.now();
-        return new Professional(UUID.randomUUID(), documentTypeId, documentNumber, firstName, lastName,
-                professionalTypeId, licenseNumber, Boolean.TRUE, cityId, now, now);
+    public static Professional register(
+        UUID documentTypeId,
+        String documentNumber,
+        String firstName,
+        String lastName,
+        UUID professionalTypeId,
+        String licenseNumber,
+        UUID cityId) {
+
+        ProfessionalId id = ProfessionalId.generate();
+
+        Professional entity = new Professional(
+            id,
+            documentTypeId,
+            documentNumber,
+            firstName,
+            lastName,
+            professionalTypeId,
+            licenseNumber,
+            cityId,
+            true);
+
+        entity.recordEvent(
+            new ProfessionalRegisteredEvent(
+                id,
+                LocalDateTime.now()));
+
+        return entity;
     }
 
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-    public UUID getDocumentTypeId() { return documentTypeId; }
-    public void setDocumentTypeId(UUID documentTypeId) { this.documentTypeId = documentTypeId; }
-    public String getDocumentNumber() { return documentNumber; }
-    public void setDocumentNumber(String documentNumber) { this.documentNumber = documentNumber; }
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
-    public UUID getProfessionalTypeId() { return professionalTypeId; }
-    public void setProfessionalTypeId(UUID professionalTypeId) { this.professionalTypeId = professionalTypeId; }
-    public String getLicenseNumber() { return licenseNumber; }
-    public void setLicenseNumber(String licenseNumber) { this.licenseNumber = licenseNumber; }
-    public Boolean getActive() { return active; }
-    public void setActive(Boolean active) { this.active = active; }
-    public UUID getCityId() { return cityId; }
-    public void setCityId(UUID cityId) { this.cityId = cityId; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public static Professional restore(
+        ProfessionalId id,
+        UUID documentTypeId,
+        String documentNumber,
+        String firstName,
+        String lastName,
+        UUID professionalTypeId,
+        String licenseNumber,
+        UUID cityId,
+        boolean active) {
+        return new Professional(
+            id,
+            documentTypeId,
+            documentNumber,
+            firstName,
+            lastName,
+            professionalTypeId,
+            licenseNumber,
+            cityId,
+            active);
+    }
 
+    public void update(
+        UUID documentTypeId,
+        String documentNumber,
+        String firstName,
+        String lastName,
+        UUID professionalTypeId,
+        String licenseNumber,
+        UUID cityId) {
+
+        this.documentTypeId = Objects.requireNonNull(documentTypeId);
+        this.documentNumber = Objects.requireNonNull(documentNumber);
+        this.firstName = Objects.requireNonNull(firstName);
+        this.lastName = Objects.requireNonNull(lastName);
+        this.professionalTypeId = Objects.requireNonNull(professionalTypeId);
+        this.licenseNumber = licenseNumber;
+        this.cityId = cityId;
+
+        recordEvent(
+            new ProfessionalUpdatedEvent(
+                this.id,
+                this.documentTypeId,
+                this.documentNumber,
+                this.firstName,
+                this.lastName,
+                this.professionalTypeId,
+                this.licenseNumber,
+                this.cityId,
+                LocalDateTime.now()));
+    }
+
+    public ProfessionalId id() {
+        return id;
+    }
+
+    public UUID documentTypeId() {
+        return documentTypeId;
+    }
+    public String documentNumber() {
+        return documentNumber;
+    }
+    public String firstName() {
+        return firstName;
+    }
+    public String lastName() {
+        return lastName;
+    }
+    public UUID professionalTypeId() {
+        return professionalTypeId;
+    }
+    public String licenseNumber() {
+        return licenseNumber;
+    }
+    public UUID cityId() {
+        return cityId;
+    }
+    public boolean active() {
+        return active;
+    }
+    // Alias para compatibilidad con mappers y frameworks
+    public ProfessionalId getId() {
+        return id();
+    }
+
+    public UUID getDocumentTypeId() {
+        return documentTypeId();
+    }
+    public String getDocumentNumber() {
+        return documentNumber();
+    }
+    public String getFirstName() {
+        return firstName();
+    }
+    public String getLastName() {
+        return lastName();
+    }
+    public UUID getProfessionalTypeId() {
+        return professionalTypeId();
+    }
+    public String getLicenseNumber() {
+        return licenseNumber();
+    }
+    public UUID getCityId() {
+        return cityId();
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public void activate() {
+        this.active = true;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(id, ((Professional) o).id);
+        Professional that = (Professional) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Override
     public String toString() {
-        return "Professional{id=" + id + ", firstName='" + firstName + "', lastName='" + lastName + "'}";
+        return "Professional{" +
+                "id=" + id +
+                '}';
     }
 }

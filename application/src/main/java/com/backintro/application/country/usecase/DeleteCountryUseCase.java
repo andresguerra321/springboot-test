@@ -8,32 +8,16 @@ import com.backintro.domain.country.model.valueobject.CountryId;
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 public class DeleteCountryUseCase {
+    private final CountryRepository repository;
 
-    private final CountryRepository countryRepository;
-
-    public DeleteCountryUseCase(
-            CountryRepository countryRepository
-    ) {
-        this.countryRepository = countryRepository;
+    public DeleteCountryUseCase(CountryRepository repository) {
+        this.repository = repository;
     }
 
-    public CountryDeletedEvent execute(
-            CountryId id
-    ) {
-
-        var country =
-                countryRepository.findById(id)
-                        .orElseThrow(() ->
-                                new CountryNotFoundApplicationException(
-                                        id.value().toString()
-                                )
-                        );
-
-        countryRepository.delete(country);
-
-        return new CountryDeletedEvent(
-                id,
-                LocalDateTime.now()
-        );
+    public CountryDeletedEvent execute(CountryId id) {
+        var entity = repository.findById(id)
+                .orElseThrow(() -> new CountryNotFoundApplicationException(id.value().toString()));
+        repository.delete(entity);
+        return new CountryDeletedEvent(id, LocalDateTime.now());
     }
 }

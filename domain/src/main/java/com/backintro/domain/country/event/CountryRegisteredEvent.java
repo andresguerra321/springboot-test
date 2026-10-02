@@ -12,15 +12,7 @@ public record CountryRegisteredEvent(
 ) implements DomainEvent {
 
     public CountryRegisteredEvent {
-
-        Objects.requireNonNull(
-            id,
-            "id must not be null"
-        );
-
-        Objects.requireNonNull(
-            occurredOn,
-            "occurredOn must not be null"
-        );
+        Objects.requireNonNull(id, "id must not be null");
+        Objects.requireNonNull(occurredOn, "occurredOn must not be null");
     }
 }

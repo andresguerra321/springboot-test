@@ -1,23 +1,14 @@
 package com.backintro.domain.contact.port.repository;
 
-import com.backintro.domain.contact.model.aggregate.Contact;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-/**
- * Puerto de salida para el repositorio de Contact.
- */
+import com.backintro.domain.contact.model.aggregate.Contact;
+import com.backintro.domain.contact.model.valueobject.ContactId;
+
 public interface ContactRepository {
-
-    Contact save(Contact contact);
-
-    Optional<Contact> findById(UUID id);
-
+    Contact save(Contact entity);
+    Optional<Contact> findById(ContactId id);
     List<Contact> findAll();
-
-    void deleteById(UUID id);
-
-    boolean existsById(UUID id);
+    void delete(Contact entity);
 }
