@@ -10,24 +10,47 @@ Durante el desarrollo en esta rama, se llevaron a cabo los siguientes hitos:
 3. **Automatización a Gran Escala:** Se diseñaron scripts de metaprogramación que orquestaron la creación paralela de **1,352 archivos Java** (26 componentes por módulo).
 4. **Verificación de Integridad Espejo:** Se corrió una auditoría algorítmica para validar que las clases Java fuesen un reflejo 1 a 1 de la base de datos Flyway. Durante este proceso se rectificaron relaciones de llaves y mapeos de columnas de auditoría (`created_by`, `updated_by`).
 
-## 🧱 Estructura de Capas (Arquitectura Hexagonal)
-Cada uno de los 52 módulos implementados posee un acoplamiento flojo mediante las siguientes 3 capas:
+## 🧱 Estructura Hexagonal (Puertos y Adaptadores)
+La arquitectura de este proyecto respeta el principio de **Inversión de Dependencias** y el patrón de **Puertos y Adaptadores**, garantizando que la lógica central del negocio sea completamente agnóstica a la base de datos o la interfaz web.
 
-### 1. Domain (`/domain`)
-*   **Aggregate Roots:** Entidades puras y desconectadas de frameworks.
-*   **Value Objects:** Encapsulamiento robusto de identificadores (ej. `PatientId`) auto-generados vía UUID.
-*   **Events & Exceptions:** Disparo de eventos de dominio (`Registered`, `Updated`) y excepciones controladas por reglas de negocio.
-*   **Ports:** Interfaces abstractas de los repositorios.
+Cada uno de los 52 módulos se divide estrictamente en 3 componentes aislados:
 
-### 2. Application (`/application`)
-*   **Use Cases:** Diseño atómico (1 Caso de Uso = 1 Archivo Java) cubriendo operaciones Register, List, GetById, Update, Delete.
-*   **Commands:** Records inmutables para transportar intención operativa.
-*   **Response DTOs:** Transferencia de datos, la cual **resuelve de forma activa las llaves foráneas** mediante inyección de repositorios (Ej. Retornar el `cityName` real y no solo el ID numérico).
+### 1. Dominio (`/domain`) - El Núcleo Hexagonal
+*El dominio no conoce a Spring Boot ni a las bases de datos. Es puro código Java.*
+*   **Aggregate Roots:** Entidades modelo de negocio ricas en comportamiento (Ej. `Patient.java`).
+*   **Value Objects:** Encapsulamiento robusto e inmutable de identificadores y propiedades. Destaca el uso de clases fuertemente tipadas (Ej. `PatientId`) auto-generadas vía UUID.
+*   **Events & Exceptions:** Eventos de dominio disparados internamente (`Registered`, `Updated`) y excepciones puras de negocio (`AlreadyExistsException`).
+*   **Ports (Puertos de Salida):** Interfaces abstractas que definen el contrato que la infraestructura debe cumplir (Ej. `PatientRepository.java`).
 
-### 3. Infrastructure (`/infrastructure`)
-*   **REST Controllers:** Interfaces web (`@RestController`) que dirigen tráfico HTTP y lo delegan a los Use Cases. Protegidos mediante *Jakarta Validation*.
-*   **Persistence (JPA):** Clases `@Entity` fuertemente acopladas a la sintaxis `jakarta.persistence.*`, Mappers estáticos y repositorios de Spring Data.
-*   **Dependency Injection:** Inversión de control declarada localmente en clases `*BeansConfig.java`.
+### 2. Aplicación (`/application`) - Casos de Uso
+*Orquesta el flujo de información entre el exterior y el dominio, implementando los requerimientos del sistema.*
+*   **Use Cases:** Diseño atómico modular. Cada archivo representa una única acción (Ej. `RegisterPatientUseCase.java`, `ListPatientUseCase.java`).
+*   **Commands:** Records inmutables (`RegisterPatientCommand`) para transportar la intención operativa de forma segura hacia el caso de uso.
+*   **Response DTOs:** Transferencia de datos de salida. Aquí se **resuelven activamente las llaves foráneas** mediante inyección de repositorios del dominio (Ej. Retornar el `cityName` real mapeando un `cityId`).
+
+### 3. Infraestructura (`/infrastructure`) - Los Adaptadores
+*Se encarga de los detalles técnicos, la persistencia JPA y el transporte HTTP.*
+*   **REST Controllers (Adaptadores de Entrada):** Exponen rutas `/api/...` dirigiendo el tráfico HTTP hacia los Use Cases. Protegidos mediante anotaciones de validación `@Valid`.
+*   **Persistence (Adaptadores de Salida):** Implementan los Puertos del Dominio. Contienen clases `@Entity` (JPA), interfaces Spring Data (`JpaRepository`), Mappers estáticos e implementaciones de adaptador (`RepositoryAdapter.java`).
+*   **Dependency Injection (Beans):** Configuración explícita de Spring Boot (`PatientBeansConfig.java`) que amarra las interfaces del dominio con las implementaciones de infraestructura, logrando la *Inversión de Control*.
+
+```text
+📁 {module_name}
+├── 📁 domain
+│   ├── 📁 event
+│   ├── 📁 exception
+│   ├── 📁 model (aggregate, valueobject)
+│   └── 📁 port.repository
+├── 📁 application
+│   ├── 📁 command
+│   ├── 📁 dto
+│   ├── 📁 exception
+│   └── 📁 usecase
+└── 📁 infrastructure
+    ├── 📁 adapters.in.rest (controllers, dtos, exceptionhandlers)
+    ├── 📁 adapters.out.persistence (entity, mappers, repositories)
+    └── 📁 config
+```
 
 ## 🛠️ Stack Tecnológico Destacado
 *   **Java / Spring Boot 3** (Contenedor IoC y Exposición REST)
