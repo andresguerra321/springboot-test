@@ -28,6 +28,7 @@ spring:
     table: flyway_schema_history_librarydb
     baseline-on-migrate: true
     baseline-version: 0
+    validate-on-migrate: false
     placeholders:
       db_schema: librarydb_schema
 

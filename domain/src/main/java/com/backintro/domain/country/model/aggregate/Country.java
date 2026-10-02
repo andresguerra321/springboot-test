@@ -10,7 +10,7 @@ import java.util.UUID;
  * Agregado raíz de Country en la capa de Dominio.
  * POJO puro e independiente sin anotaciones de frameworks.
  */
-public class Country {
+public class Country extends com.backintro.domain.common.model.AggregateRoot {
 
     private UUID id;
     private String nameCountry;
@@ -36,9 +36,15 @@ public class Country {
         this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
     }
 
+    public Country(com.backintro.domain.country.model.valueobject.CountryId countryId, String nameCountry,
+                   CountryCode codeCountry, String description, Boolean isActive, String telephonePrefix,
+                   LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this(countryId != null ? countryId.value() : null, nameCountry, codeCountry, description, isActive, telephonePrefix, createdAt, updatedAt);
+    }
+
     public static Country create(String nameCountry, String codeCountry, String description, String telephonePrefix) {
         LocalDateTime now = LocalDateTime.now();
-        return new Country(
+        Country country = new Country(
                 UUID.randomUUID(),
                 nameCountry,
                 new CountryCode(codeCountry),
@@ -48,6 +54,16 @@ public class Country {
                 now,
                 now
         );
+        country.registerEvent(new com.backintro.domain.country.event.CountryRegisteredEvent(country.getId(), nameCountry, codeCountry));
+        return country;
+    }
+
+    public com.backintro.domain.country.model.valueobject.CountryId getCountryId() {
+        return id != null ? new com.backintro.domain.country.model.valueobject.CountryId(id) : null;
+    }
+
+    public void setCountryId(com.backintro.domain.country.model.valueobject.CountryId countryId) {
+        this.id = countryId != null ? countryId.value() : null;
     }
 
     public UUID getId() {
