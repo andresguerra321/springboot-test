@@ -1,50 +1,57 @@
 # Back-Intro (Spring Boot Multi-Módulo)
 
-Backend desarrollado con **Spring Boot**, diseñado bajo los principios de **Arquitectura Hexagonal (Puertos y Adaptadores)** y **Domain-Driven Design (DDD)**. Cuenta con una gestión robusta del esquema de base de datos relacional mediante **Flyway**.
+Backend desarrollado con **Spring Boot**, diseñado bajo los principios de **Arquitectura Hexagonal (Puertos y Adaptadores)** y **Domain-Driven Design (DDD)** modular por Bounded Contexts. Cuenta con una gestión robusta del esquema de base de datos relacional mediante **Flyway**.
 
 ---
 
 ## 🏛️ Arquitectura del Proyecto
 
-El proyecto está estructurado como un proyecto multi-módulo de Maven para garantizar una estricta separación de responsabilidades y bajo acoplamiento:
+El proyecto está organizado como un sistema multi-módulo de Maven para garantizar desacoplamiento total del dominio y una estricta separación de responsabilidades:
 
 ```
 back-intro/
-├── domain/                  # Núcleo del negocio (puro, sin frameworks)
-│   ├── aggregate/           # Agregados y entidades de dominio
-│   ├── model/               # Modelos y Value Objects
-│   ├── port/                # Interfaces de entrada y salida (Puertos)
-│   └── exception/           # Excepciones de negocio
+├── domain/                                  # Núcleo del negocio (puro, Java estándar, sin frameworks)
+│   ├── common/                              # Clases base compartidas (AggregateRoot, DomainEvent, DomainException)
+│   └── <bounded-context>/                   # Módulos de dominio (country, empresa, catalog, patient, etc.)
+│       ├── event/                           # Eventos de dominio inmutables (records)
+│       ├── exception/                       # Excepciones semánticas de negocio
+│       ├── model/
+│       │   ├── aggregate/                   # Agregado raíz (hereda de AggregateRoot)
+│       │   └── valueobject/                 # Value Objects inmutables (records con invariantes)
+│       └── port/
+│           └── repository/                  # Interfaces de repositorio (puertos de salida de dominio)
 │
-├── application/             # Casos de uso y orquestación
-│   ├── usecase/             # Lógica de aplicación
-│   ├── command/             # Comandos (CQRS/intenciones)
-│   ├── query/               # Consultas
-│   └── dto/                 # Data Transfer Objects
+├── application/                             # Casos de uso y orquestación
+│   └── <bounded-context>/
+│       ├── command/                         # Comandos de intención (intents/CQRS)
+│       ├── dto/                             # DTOs de respuesta de aplicación
+│       ├── exception/                       # Excepciones de aplicación
+│       └── usecase/                         # Casos de uso desacoplados de frameworks
 │
-└── infrastructure/          # Adaptadores tecnológicos y configuración
+└── infrastructure/                          # Adaptadores tecnológicos y configuración de Spring Boot
     ├── src/main/java/com/backintro/infrastructure/
-    │   ├── .../adapters/in/ # Adaptadores de entrada (Controladores REST)
-    │   ├── .../adapters/out/# Adaptadores de salida (JPA Repositories, DB)
-    │   └── config/          # Configuraciones de Spring, CORS, etc.
+    │   └── <bounded-context>/
+    │       ├── adapters/in/rest/            # Adaptadores primarios (Controladores REST, DTOs, Handlers)
+    │       ├── adapters/out/persistence/    # Adaptadores secundarios (JPA Entities, Mappers, Repositorios)
+    │       └── config/                      # Configuración de beans de Spring para los Casos de Uso
     └── src/main/resources/
         ├── application.yml
         ├── application-dev.yml
-        └── db/migration/    # Scripts SQL versionados de Flyway (V1...V53)
+        └── db/migration/                    # Scripts SQL incrementales de Flyway (V1...V53)
 ```
 
 ### Reglas de Dependencia
-1. **Domain**: No depende de ningún framework (ni Spring ni Hibernate). Solo Java estándar.
-2. **Application**: Conoce el dominio pero no los detalles técnicos de infraestructura.
-3. **Infrastructure**: Implementa los puertos definidos en el dominio y orquesta los frameworks (Spring Boot, JPA, Flyway, PostgreSQL, etc.).
+1. **Domain**: No depende de ningún framework ni librería externa. Solo Java puro.
+2. **Application**: Depende únicamente de `domain`. No conoce controladores, JPA ni detalles de infraestructura.
+3. **Infrastructure**: Conoce `application` y `domain`. Implementa los puertos y orquesta frameworks (Spring Boot, Spring Data JPA, Flyway, PostgreSQL).
 
 ---
 
 ## 🔄 Estrategia de Migraciones: Flyway vs. JPA
 
-Una de las decisiones arquitectónicas clave en este proyecto es el manejo del ciclo de vida de la base de datos:
+Una de las decisiones arquitectónicas clave en este proyecto es el control explícito del ciclo de vida de la base de datos:
 
-### ¿Por qué Flyway en lugar del `ddl-auto` de JPA/Hibernate?
+### ¿Por qué Flyway en lugar de `ddl-auto` de JPA/Hibernate?
 
 | Aspecto | JPA (`hibernate.ddl-auto: update/create`) | Flyway (Elegido en este proyecto) |
 | :--- | :--- | :--- |
@@ -73,20 +80,17 @@ Una de las decisiones arquitectónicas clave en este proyecto es el manejo del c
       table: flyway_schema_history_librarydb
   ```
 
-Los scripts de migración se encuentran en:
-`infrastructure/src/main/resources/db/migration/` y se ejecutan secuencialmente de manera automática al iniciar la aplicación.
-
 ---
 
 ## 🛠️ Tecnologías Utilizadas
 
 * **Java 17**
 * **Spring Boot 4.x** (Web, Validation, Data JPA)
-* **PostgreSQL** (Motor de base de datos)
+* **PostgreSQL** (Motor relacional)
 * **Flyway** (Control de versiones de base de datos)
-* **MapStruct** (Mapeo eficiente de objetos/DTOs)
+* **MapStruct** (Mapeo eficiente de objetos)
 * **SpringDoc OpenAPI (Swagger)** (Documentación interactiva de la API)
-* **Maven** (Gestor de dependencias multi-módulo)
+* **Maven** (Gestión de dependencias multi-módulo)
 
 ---
 
@@ -95,7 +99,7 @@ Los scripts de migración se encuentran en:
 ### 1. Prerrequisitos
 * Java JDK 17 o superior instalado.
 * Maven 3.8+ instalado.
-* Instancia de PostgreSQL en ejecución.
+* Instancia de PostgreSQL en ejecución (puerto `5432`).
 
 ### 2. Base de Datos
 Crear la base de datos en PostgreSQL:
@@ -103,7 +107,7 @@ Crear la base de datos en PostgreSQL:
 CREATE DATABASE librarydb;
 ```
 
-*(Opcional con Docker)*:
+*(Opcional mediante Docker)*:
 ```bash
 docker run --name postgres-librarydb -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=librarydb -p 5432:5432 -d postgres:16
 ```
@@ -115,17 +119,20 @@ mvn clean install
 ```
 
 ### 4. Ejecutar la Aplicación
-Puedes iniciar el backend desde tu IDE ejecutando `BackIntroApplication` o mediante terminal:
 ```bash
 mvn spring-boot:run -pl infrastructure
 ```
 
-Al iniciar, Flyway aplicará automáticamente todos los scripts pendientes en el esquema `librarydb_schema`.
+Al iniciar, Flyway ejecutará de forma automática y ordenada todas las migraciones SQL pendientes.
 
 ---
 
-## 📖 Documentación de la API (Swagger UI)
+## 📖 Endpoints y Documentación Interactiva (Swagger UI)
 
 Una vez iniciada la aplicación en el puerto `8081`:
 * **Swagger UI:** [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)
 * **OpenAPI Docs:** [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs)
+
+### Endpoints Principales Disponibles:
+* **Countries:** `/api/v1/countries` (`GET`, `POST`, `GET /{id}`, `GET /code/{code}`, `PUT /{id}`, `DELETE /{id}`)
+* **Empresas:** `/api/v1/empresas` (`GET`, `POST`, `GET /{id}`, `PUT /{id}`, `DELETE /{id}`)
