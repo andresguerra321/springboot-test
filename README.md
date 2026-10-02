@@ -1,138 +1,36 @@
-# Back-Intro (Spring Boot Multi-Módulo)
+# Proyecto Back-Intro: Migración de Bounded Contexts
 
-Backend desarrollado con **Spring Boot**, diseñado bajo los principios de **Arquitectura Hexagonal (Puertos y Adaptadores)** y **Domain-Driven Design (DDD)** modular por Bounded Contexts. Cuenta con una gestión robusta del esquema de base de datos relacional mediante **Flyway**.
+## 📌 Descripción General
+Este repositorio (rama `boundcontext`) alberga la arquitectura hexagonal completa y el Domain-Driven Design (DDD) del sistema `back-intro`. El hito principal de esta versión es la **generación e integración automática de 52 Bounded Contexts** que estructuran todo el esquema relacional de la base de datos PostgreSQL, garantizando simetría y coherencia de código.
 
----
+## 🚀 Acciones Realizadas
+Durante el desarrollo en esta rama, se llevaron a cabo los siguientes hitos:
+1. **Auditoría de Esquemas SQL:** Se analizaron los scripts de migración de Flyway (`V1` a `V26`) para mapear 52 tablas, deduciendo tipos de datos exactos, restricciones (Not Null) y relaciones de llave foránea.
+2. **Definición de Modelo Guía:** Se utilizó el módulo `country` como estándar de oro para heredar sus reglas de diseño arquitectónico y de persistencia.
+3. **Automatización a Gran Escala:** Se diseñaron scripts de metaprogramación que orquestaron la creación paralela de **1,352 archivos Java** (26 componentes por módulo).
+4. **Verificación de Integridad Espejo:** Se corrió una auditoría algorítmica para validar que las clases Java fuesen un reflejo 1 a 1 de la base de datos Flyway. Durante este proceso se rectificaron relaciones de llaves y mapeos de columnas de auditoría (`created_by`, `updated_by`).
 
-## 🏛️ Arquitectura del Proyecto
+## 🧱 Estructura de Capas (Arquitectura Hexagonal)
+Cada uno de los 52 módulos implementados posee un acoplamiento flojo mediante las siguientes 3 capas:
 
-El proyecto está organizado como un sistema multi-módulo de Maven para garantizar desacoplamiento total del dominio y una estricta separación de responsabilidades:
+### 1. Domain (`/domain`)
+*   **Aggregate Roots:** Entidades puras y desconectadas de frameworks.
+*   **Value Objects:** Encapsulamiento robusto de identificadores (ej. `PatientId`) auto-generados vía UUID.
+*   **Events & Exceptions:** Disparo de eventos de dominio (`Registered`, `Updated`) y excepciones controladas por reglas de negocio.
+*   **Ports:** Interfaces abstractas de los repositorios.
 
-```
-back-intro/
-├── domain/                                  # Núcleo del negocio (puro, Java estándar, sin frameworks)
-│   ├── common/                              # Clases base compartidas (AggregateRoot, DomainEvent, DomainException)
-│   └── <bounded-context>/                   # Módulos de dominio (country, empresa, catalog, patient, etc.)
-│       ├── event/                           # Eventos de dominio inmutables (records)
-│       ├── exception/                       # Excepciones semánticas de negocio
-│       ├── model/
-│       │   ├── aggregate/                   # Agregado raíz (hereda de AggregateRoot)
-│       │   └── valueobject/                 # Value Objects inmutables (records con invariantes)
-│       └── port/
-│           └── repository/                  # Interfaces de repositorio (puertos de salida de dominio)
-│
-├── application/                             # Casos de uso y orquestación
-│   └── <bounded-context>/
-│       ├── command/                         # Comandos de intención (intents/CQRS)
-│       ├── dto/                             # DTOs de respuesta de aplicación
-│       ├── exception/                       # Excepciones de aplicación
-│       └── usecase/                         # Casos de uso desacoplados de frameworks
-│
-└── infrastructure/                          # Adaptadores tecnológicos y configuración de Spring Boot
-    ├── src/main/java/com/backintro/infrastructure/
-    │   └── <bounded-context>/
-    │       ├── adapters/in/rest/            # Adaptadores primarios (Controladores REST, DTOs, Handlers)
-    │       ├── adapters/out/persistence/    # Adaptadores secundarios (JPA Entities, Mappers, Repositorios)
-    │       └── config/                      # Configuración de beans de Spring para los Casos de Uso
-    └── src/main/resources/
-        ├── application.yml
-        ├── application-dev.yml
-        └── db/migration/                    # Scripts SQL incrementales de Flyway (V1...V53)
-```
+### 2. Application (`/application`)
+*   **Use Cases:** Diseño atómico (1 Caso de Uso = 1 Archivo Java) cubriendo operaciones Register, List, GetById, Update, Delete.
+*   **Commands:** Records inmutables para transportar intención operativa.
+*   **Response DTOs:** Transferencia de datos, la cual **resuelve de forma activa las llaves foráneas** mediante inyección de repositorios (Ej. Retornar el `cityName` real y no solo el ID numérico).
 
-### Reglas de Dependencia
-1. **Domain**: No depende de ningún framework ni librería externa. Solo Java puro.
-2. **Application**: Depende únicamente de `domain`. No conoce controladores, JPA ni detalles de infraestructura.
-3. **Infrastructure**: Conoce `application` y `domain`. Implementa los puertos y orquesta frameworks (Spring Boot, Spring Data JPA, Flyway, PostgreSQL).
+### 3. Infrastructure (`/infrastructure`)
+*   **REST Controllers:** Interfaces web (`@RestController`) que dirigen tráfico HTTP y lo delegan a los Use Cases. Protegidos mediante *Jakarta Validation*.
+*   **Persistence (JPA):** Clases `@Entity` fuertemente acopladas a la sintaxis `jakarta.persistence.*`, Mappers estáticos y repositorios de Spring Data.
+*   **Dependency Injection:** Inversión de control declarada localmente en clases `*BeansConfig.java`.
 
----
-
-## 🔄 Estrategia de Migraciones: Flyway vs. JPA
-
-Una de las decisiones arquitectónicas clave en este proyecto es el control explícito del ciclo de vida de la base de datos:
-
-### ¿Por qué Flyway en lugar de `ddl-auto` de JPA/Hibernate?
-
-| Aspecto | JPA (`hibernate.ddl-auto: update/create`) | Flyway (Elegido en este proyecto) |
-| :--- | :--- | :--- |
-| **Control de Cambios** | Automático e impredecible en producción. | Explícito mediante scripts SQL versionados (`V1__...sql`). |
-| **Historial / Auditoría** | No existe registro de qué cambió ni cuándo. | Tabla `flyway_schema_history` con fechas, usuarios y checksums. |
-| **Renombrado y Migración de Datos** | Puede duplicar columnas o perder datos al renombrar. | Permite transformaciones complejas de datos (DDL y DML). |
-| **Reproducibilidad** | Depende del escaneo de entidades al arrancar. | Garantiza idéntico estado en Local, QA, Staging y Producción. |
-
-### Configuración aplicada en `application-dev.yml`:
-* **JPA en modo pasivo**:
-  ```yaml
-  spring:
-    jpa:
-      hibernate:
-        ddl-auto: none   # Hibernate NO altera las tablas; delega todo a Flyway
-  ```
-* **Flyway como fuente de verdad**:
-  ```yaml
-  spring:
-    flyway:
-      enabled: true
-      locations: classpath:db/migration
-      schemas:
-        - librarydb_schema
-      default-schema: librarydb_schema
-      table: flyway_schema_history_librarydb
-  ```
-
----
-
-## 🛠️ Tecnologías Utilizadas
-
-* **Java 17**
-* **Spring Boot 4.x** (Web, Validation, Data JPA)
-* **PostgreSQL** (Motor relacional)
-* **Flyway** (Control de versiones de base de datos)
-* **MapStruct** (Mapeo eficiente de objetos)
-* **SpringDoc OpenAPI (Swagger)** (Documentación interactiva de la API)
-* **Maven** (Gestión de dependencias multi-módulo)
-
----
-
-## 🚀 Puesta en Marcha Local
-
-### 1. Prerrequisitos
-* Java JDK 17 o superior instalado.
-* Maven 3.8+ instalado.
-* Instancia de PostgreSQL en ejecución (puerto `5432`).
-
-### 2. Base de Datos
-Crear la base de datos en PostgreSQL:
-```sql
-CREATE DATABASE librarydb;
-```
-
-*(Opcional mediante Docker)*:
-```bash
-docker run --name postgres-librarydb -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=librarydb -p 5432:5432 -d postgres:16
-```
-
-### 3. Compilar el Proyecto
-Desde la raíz del repositorio:
-```bash
-mvn clean install
-```
-
-### 4. Ejecutar la Aplicación
-```bash
-mvn spring-boot:run -pl infrastructure
-```
-
-Al iniciar, Flyway ejecutará de forma automática y ordenada todas las migraciones SQL pendientes.
-
----
-
-## 📖 Endpoints y Documentación Interactiva (Swagger UI)
-
-Una vez iniciada la aplicación en el puerto `8081`:
-* **Swagger UI:** [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)
-* **OpenAPI Docs:** [http://localhost:8081/v3/api-docs](http://localhost:8081/v3/api-docs)
-
-### Endpoints Principales Disponibles:
-* **Countries:** `/api/v1/countries` (`GET`, `POST`, `GET /{id}`, `GET /code/{code}`, `PUT /{id}`, `DELETE /{id}`)
-* **Empresas:** `/api/v1/empresas` (`GET`, `POST`, `GET /{id}`, `PUT /{id}`, `DELETE /{id}`)
+## 🛠️ Stack Tecnológico Destacado
+*   **Java / Spring Boot 3** (Contenedor IoC y Exposición REST)
+*   **Jakarta Persistence API / Hibernate** (Mapeo ORM)
+*   **Flyway** (Migraciones y control de versiones DB)
+*   **PostgreSQL** (Almacén de datos subyacente)
