@@ -58,6 +58,34 @@ public class Country extends com.backintro.domain.common.model.AggregateRoot {
         return country;
     }
 
+    public void update(String nameCountry, String codeCountry, String description, String telephonePrefix, Boolean isActive) {
+        if (nameCountry != null && !nameCountry.trim().isEmpty()) {
+            this.nameCountry = nameCountry;
+        }
+        if (codeCountry != null && !codeCountry.trim().isEmpty()) {
+            this.codeCountry = new CountryCode(codeCountry);
+        }
+        if (description != null) {
+            this.description = description;
+        }
+        if (telephonePrefix != null) {
+            this.telephonePrefix = telephonePrefix;
+        }
+        if (isActive != null) {
+            this.isActive = isActive;
+        }
+        this.updatedAt = LocalDateTime.now();
+        registerEvent(new com.backintro.domain.country.event.CountryUpdatedEvent(
+                this.id,
+                this.nameCountry,
+                this.codeCountry != null ? this.codeCountry.getValue() : null
+        ));
+    }
+
+    public void delete() {
+        registerEvent(new com.backintro.domain.country.event.CountryDeletedEvent(this.id));
+    }
+
     public com.backintro.domain.country.model.valueobject.CountryId getCountryId() {
         return id != null ? new com.backintro.domain.country.model.valueobject.CountryId(id) : null;
     }

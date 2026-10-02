@@ -1,4 +1,4 @@
-package com.backintro.infrastructure.adapters.outbound.persistence.entities;
+package com.backintro.infrastructure.country.adapters.out.persistence.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,10 +11,8 @@ import java.util.UUID;
 
 /**
  * Entidad JPA para la tabla 'countries'.
- * Mapeo directo respetando los tipos de datos y restricciones definidos en schema.sql.
  */
-@Deprecated
-@Entity(name = "OldCountryJpaEntity")
+@Entity
 @Table(name = "countries")
 public class CountryJpaEntity {
 
@@ -133,19 +131,5 @@ public class CountryJpaEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "CountryJpaEntity{" +
-                "id=" + id +
-                ", nameCountry='" + nameCountry + '\'' +
-                ", codeCountry='" + codeCountry + '\'' +
-                ", description='" + description + '\'' +
-                ", isActive=" + isActive +
-                ", telephonePrefix='" + telephonePrefix + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }
