@@ -1,6 +1,7 @@
 package com.backintro.application.country.usecase;
 
 import com.backintro.application.country.exception.CountryNotFoundApplicationException;
+import com.backintro.domain.country.model.valueobject.CountryId;
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 import java.util.Objects;
@@ -22,10 +23,11 @@ public class DeleteCountryUseCase {
             throw new IllegalArgumentException("El ID no puede ser nulo");
         }
 
-        if (!countryRepository.existsById(id)) {
+        CountryId countryId = new CountryId(id);
+        if (!countryRepository.existsById(countryId)) {
             throw new CountryNotFoundApplicationException(id);
         }
 
-        countryRepository.deleteById(id);
+        countryRepository.deleteById(countryId);
     }
 }

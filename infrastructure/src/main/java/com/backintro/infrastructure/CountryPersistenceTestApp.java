@@ -27,11 +27,9 @@ public class CountryPersistenceTestApp {
             CountryRepositoryPort countryRepository = new CountryJpaRepositoryAdapter(emf);
 
             // 3. Crear una entidad de dominio pura (sin dependencias de JPA)
-            Country newCountry = Country.create(
+            Country newCountry = Country.register(
                     "Colombia",
-                    "CO",
-                    "República de Colombia",
-                    "+57"
+                    "CO"
             );
 
             System.out.println("\n[1] Guardando nuevo país en la base de datos...");
@@ -39,21 +37,21 @@ public class CountryPersistenceTestApp {
             System.out.println("País guardado con éxito: " + savedCountry);
 
             // 4. Buscar por ID
-            System.out.println("\n[2] Consultando país por ID: " + savedCountry.getId());
-            Optional<Country> foundCountry = countryRepository.findById(savedCountry.getId());
+            System.out.println("\n[2] Consultando país por ID: " + savedCountry.getId().value());
+            Optional<Country> foundCountry = countryRepository.findById(savedCountry.getId().value());
             foundCountry.ifPresent(c -> System.out.println("País recuperado: " + c));
 
             // 5. Buscar por código ISO
             System.out.println("\n[3] Consultando país por código 'CO'...");
             Optional<Country> countryByCode = countryRepository.findByCode("CO");
-            countryByCode.ifPresent(c -> System.out.println("País encontrado por código: " + c.getNameCountry()));
+            countryByCode.ifPresent(c -> System.out.println("País encontrado por código: " + c.getName()));
 
             // 6. Listar todos
             System.out.println("\n[4] Listando todos los países...");
             List<Country> allCountries = countryRepository.findAll();
             System.out.println("Total países encontrados: " + allCountries.size());
             for (Country c : allCountries) {
-                System.out.println(" - " + c.getNameCountry() + " [" + c.getCodeCountry() + "]");
+                System.out.println(" - " + c.getName() + " [" + c.getCode() + "]");
             }
 
         } catch (Exception e) {

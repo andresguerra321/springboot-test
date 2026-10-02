@@ -3,6 +3,7 @@ package com.backintro.application.country.usecase;
 import com.backintro.application.country.dto.CountryResponse;
 import com.backintro.application.country.exception.CountryNotFoundApplicationException;
 import com.backintro.domain.country.model.aggregate.Country;
+import com.backintro.domain.country.model.valueobject.CountryId;
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 import java.util.Objects;
@@ -24,7 +25,7 @@ public class GetCountryByIdUseCase {
             throw new IllegalArgumentException("El ID no puede ser nulo");
         }
 
-        Country country = countryRepository.findById(id)
+        Country country = countryRepository.findById(new CountryId(id))
                 .orElseThrow(() -> new CountryNotFoundApplicationException(id));
 
         return CountryResponse.fromDomain(country);

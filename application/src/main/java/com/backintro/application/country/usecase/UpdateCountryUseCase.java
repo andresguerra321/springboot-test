@@ -5,7 +5,7 @@ import com.backintro.application.country.dto.CountryResponse;
 import com.backintro.application.country.exception.CountryNotFoundApplicationException;
 import com.backintro.domain.country.exception.CountryAlreadyExistsException;
 import com.backintro.domain.country.model.aggregate.Country;
-import com.backintro.domain.country.model.valueobject.CountryCode;
+import com.backintro.domain.country.model.valueobject.CountryId;
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 import java.util.Objects;
@@ -27,24 +27,30 @@ public class UpdateCountryUseCase {
             throw new IllegalArgumentException("El comando y el ID no pueden ser nulos");
         }
 
-        Country country = countryRepository.findById(command.getId())
+        CountryId countryId = new CountryId(command.getId());
+        Country country = countryRepository.findById(countryId)
                 .orElseThrow(() -> new CountryNotFoundApplicationException(command.getId()));
 
-        if (command.getCodeCountry() != null && !command.getCodeCountry().trim().isEmpty()) {
-            CountryCode newCode = new CountryCode(command.getCodeCountry());
+        String newCode = command.getCodeCountry();
+        if (newCode != null && !newCode.trim().isEmpty() && !newCode.equalsIgnoreCase(country.getCode())) {
             Optional<Country> existingWithCode = countryRepository.findByCode(newCode);
             if (existingWithCode.isPresent() && !existingWithCode.get().getId().equals(country.getId())) {
-                throw new CountryAlreadyExistsException("Ya existe otro país registrado con el código: " + command.getCodeCountry());
+                throw new CountryAlreadyExistsException("Ya existe otro país registrado con el código: " + newCode);
             }
         }
 
-        country.update(
-                command.getNameCountry(),
-                command.getCodeCountry(),
-                command.getDescription(),
-                command.getTelephonePrefix(),
-                command.getIsActive()
-        );
+        String nameToUpdate = command.getNameCountry() != null ? command.getNameCountry() : country.getName();
+        String codeToUpdate = newCode != null ? newCode : country.getCode();
+
+        country.update(nameToUpdate, codeToUpdate);
+
+        if (command.getIsActive() != null) {
+            if (Boolean.TRUE.equals(command.getIsActive())) {
+                country.activate();
+            } else {
+                country.deactivate();
+            }
+        }
 
         Country updated = countryRepository.save(country);
         return CountryResponse.fromDomain(updated);

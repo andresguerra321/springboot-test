@@ -4,7 +4,6 @@ import com.backintro.application.country.command.RegisterCountryCommand;
 import com.backintro.application.country.dto.CountryResponse;
 import com.backintro.domain.country.exception.CountryAlreadyExistsException;
 import com.backintro.domain.country.model.aggregate.Country;
-import com.backintro.domain.country.model.valueobject.CountryCode;
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 import java.util.Objects;
@@ -25,20 +24,14 @@ public class RegisterCountryUseCase {
             throw new IllegalArgumentException("El comando no puede ser nulo");
         }
 
-        if (command.getCodeCountry() != null && !command.getCodeCountry().trim().isEmpty()) {
-            CountryCode code = new CountryCode(command.getCodeCountry());
-            if (countryRepository.findByCode(code).isPresent()) {
-                throw new CountryAlreadyExistsException("Ya existe un país registrado con el código: " + command.getCodeCountry());
-            }
+        String name = command.getNameCountry();
+        String code = command.getCodeCountry();
+
+        if (code != null && !code.trim().isEmpty() && countryRepository.existsByCode(code)) {
+            throw new CountryAlreadyExistsException("Ya existe un país registrado con el código: " + code);
         }
 
-        Country newCountry = Country.create(
-                command.getNameCountry(),
-                command.getCodeCountry(),
-                command.getDescription(),
-                command.getTelephonePrefix()
-        );
-
+        Country newCountry = Country.register(name, code);
         Country saved = countryRepository.save(newCountry);
         return CountryResponse.fromDomain(saved);
     }

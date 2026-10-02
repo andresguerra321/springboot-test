@@ -2,7 +2,7 @@ package com.backintro.infrastructure.adapters.outbound.persistence.repositories;
 
 import com.backintro.application.ports.CountryRepositoryPort;
 import com.backintro.domain.country.model.aggregate.Country;
-import com.backintro.domain.country.model.valueobject.CountryCode;
+import com.backintro.domain.country.model.valueobject.CountryId;
 import com.backintro.domain.country.port.repository.CountryRepository;
 import com.backintro.infrastructure.adapters.outbound.persistence.entities.CountryJpaEntity;
 import com.backintro.infrastructure.adapters.outbound.persistence.mappers.CountryPersistenceMapper;
@@ -17,8 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Adaptador de persistencia que implementa tanto el puerto de dominio CountryRepository
- * como el puerto de aplicación CountryRepositoryPort.
+ * Adaptador de persistencia para el prototipo Java SE que implementa CountryRepository y CountryRepositoryPort.
  */
 public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRepositoryPort {
 
@@ -86,12 +85,20 @@ public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRe
             if (tx.isActive()) {
                 tx.rollback();
             }
-            throw new RuntimeException("Error en la transacción al persistir el país: " + country.getNameCountry(), e);
+            throw new RuntimeException("Error en la transacción al persistir el país: " + country.getName(), e);
         } finally {
             if (selfManaged && em.isOpen()) {
                 em.close();
             }
         }
+    }
+
+    @Override
+    public Optional<Country> findById(CountryId id) {
+        if (id == null || id.value() == null) {
+            return Optional.empty();
+        }
+        return findById(id.value());
     }
 
     @Override
@@ -120,7 +127,7 @@ public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRe
 
         try {
             List<CountryJpaEntity> entities = em.createQuery(
-                    "SELECT c FROM CountryJpaEntity c ORDER BY c.nameCountry ASC",
+                    "SELECT c FROM OldCountryJpaEntity c ORDER BY c.nameCountry ASC",
                     CountryJpaEntity.class
             ).getResultList();
 
@@ -133,6 +140,13 @@ public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRe
             if (selfManaged && em.isOpen()) {
                 em.close();
             }
+        }
+    }
+
+    @Override
+    public void deleteById(CountryId id) {
+        if (id != null && id.value() != null) {
+            deleteById(id.value());
         }
     }
 
@@ -166,6 +180,11 @@ public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRe
     }
 
     @Override
+    public boolean existsById(CountryId id) {
+        return id != null && id.value() != null && existsById(id.value());
+    }
+
+    @Override
     public boolean existsById(UUID id) {
         if (id == null) {
             return false;
@@ -176,7 +195,7 @@ public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRe
 
         try {
             Long count = em.createQuery(
-                    "SELECT COUNT(c) FROM CountryJpaEntity c WHERE c.id = :id",
+                    "SELECT COUNT(c) FROM OldCountryJpaEntity c WHERE c.id = :id",
                     Long.class
             ).setParameter("id", id).getSingleResult();
 
@@ -189,11 +208,8 @@ public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRe
     }
 
     @Override
-    public Optional<Country> findByCode(CountryCode codeCountry) {
-        if (codeCountry == null || codeCountry.getValue() == null) {
-            return Optional.empty();
-        }
-        return findByCode(codeCountry.getValue());
+    public boolean existsByCode(String code) {
+        return findByCode(code).isPresent();
     }
 
     @Override
@@ -207,7 +223,7 @@ public class CountryJpaRepositoryAdapter implements CountryRepository, CountryRe
 
         try {
             List<CountryJpaEntity> results = em.createQuery(
-                    "SELECT c FROM CountryJpaEntity c WHERE c.codeCountry = :code",
+                    "SELECT c FROM OldCountryJpaEntity c WHERE c.codeCountry = :code",
                     CountryJpaEntity.class
             ).setParameter("code", codeCountry.trim())
              .setMaxResults(1)

@@ -3,7 +3,6 @@ package com.backintro.application.country.usecase;
 import com.backintro.application.country.dto.CountryResponse;
 import com.backintro.application.country.exception.CountryNotFoundApplicationException;
 import com.backintro.domain.country.model.aggregate.Country;
-import com.backintro.domain.country.model.valueobject.CountryCode;
 import com.backintro.domain.country.port.repository.CountryRepository;
 
 import java.util.Objects;
@@ -24,8 +23,7 @@ public class GetCountryByCodeUseCase {
             throw new IllegalArgumentException("El código de país no puede ser nulo ni vacío");
         }
 
-        CountryCode countryCode = new CountryCode(code);
-        Country country = countryRepository.findByCode(countryCode)
+        Country country = countryRepository.findByCode(code.trim())
                 .orElseThrow(() -> new CountryNotFoundApplicationException(code));
 
         return CountryResponse.fromDomain(country);

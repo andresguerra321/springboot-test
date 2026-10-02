@@ -2,7 +2,6 @@ package com.backintro.application.country.dto;
 
 import com.backintro.domain.country.model.aggregate.Country;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -11,27 +10,18 @@ import java.util.UUID;
 public class CountryResponse {
 
     private UUID id;
-    private String nameCountry;
-    private String codeCountry;
-    private String description;
-    private Boolean isActive;
-    private String telephonePrefix;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String name;
+    private String code;
+    private Boolean active;
 
     public CountryResponse() {
     }
 
-    public CountryResponse(UUID id, String nameCountry, String codeCountry, String description,
-                           Boolean isActive, String telephonePrefix, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public CountryResponse(UUID id, String name, String code, Boolean active) {
         this.id = id;
-        this.nameCountry = nameCountry;
-        this.codeCountry = codeCountry;
-        this.description = description;
-        this.isActive = isActive;
-        this.telephonePrefix = telephonePrefix;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.name = name;
+        this.code = code;
+        this.active = active;
     }
 
     /**
@@ -42,17 +32,13 @@ public class CountryResponse {
             return null;
         }
 
-        String code = country.getCodeCountry() != null ? country.getCodeCountry().getValue() : null;
+        UUID idValue = country.getId() != null ? country.getId().value() : null;
 
         return new CountryResponse(
-                country.getId(),
-                country.getNameCountry(),
-                code,
-                country.getDescription(),
-                country.getIsActive(),
-                country.getTelephonePrefix(),
-                country.getCreatedAt(),
-                country.getUpdatedAt()
+                idValue,
+                country.getName(),
+                country.getCode(),
+                country.isActive()
         );
     }
 
@@ -64,73 +50,37 @@ public class CountryResponse {
         this.id = id;
     }
 
-    public String getNameCountry() {
-        return nameCountry;
+    public String getName() {
+        return name;
     }
 
-    public void setNameCountry(String nameCountry) {
-        this.nameCountry = nameCountry;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getCodeCountry() {
-        return codeCountry;
+    public String getCode() {
+        return code;
     }
 
-    public void setCodeCountry(String codeCountry) {
-        this.codeCountry = codeCountry;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public String getDescription() {
-        return description;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean active) {
-        isActive = active;
-    }
-
-    public String getTelephonePrefix() {
-        return telephonePrefix;
-    }
-
-    public void setTelephonePrefix(String telephonePrefix) {
-        this.telephonePrefix = telephonePrefix;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     @Override
     public String toString() {
         return "CountryResponse{" +
                 "id=" + id +
-                ", nameCountry='" + nameCountry + '\'' +
-                ", codeCountry='" + codeCountry + '\'' +
-                ", description='" + description + '\'' +
-                ", isActive=" + isActive +
-                ", telephonePrefix='" + telephonePrefix + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", active=" + active +
                 '}';
     }
 }

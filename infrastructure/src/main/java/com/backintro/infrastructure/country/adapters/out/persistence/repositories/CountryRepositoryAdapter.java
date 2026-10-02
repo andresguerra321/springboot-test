@@ -1,7 +1,7 @@
 package com.backintro.infrastructure.country.adapters.out.persistence.repositories;
 
 import com.backintro.domain.country.model.aggregate.Country;
-import com.backintro.domain.country.model.valueobject.CountryCode;
+import com.backintro.domain.country.model.valueobject.CountryId;
 import com.backintro.domain.country.port.repository.CountryRepository;
 import com.backintro.infrastructure.country.adapters.out.persistence.entity.CountryJpaEntity;
 import com.backintro.infrastructure.country.adapters.out.persistence.mappers.CountryPersistenceMapper;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Adaptador de persistencia que implementa el puerto CountryRepository
@@ -40,19 +39,19 @@ public class CountryRepositoryAdapter implements CountryRepository {
     }
 
     @Override
-    public Optional<Country> findById(UUID id) {
-        if (id == null) {
+    public Optional<Country> findById(CountryId id) {
+        if (id == null || id.value() == null) {
             return Optional.empty();
         }
-        return springDataRepository.findById(id).map(mapper::toDomain);
+        return springDataRepository.findById(id.value()).map(mapper::toDomain);
     }
 
     @Override
-    public Optional<Country> findByCode(CountryCode codeCountry) {
-        if (codeCountry == null || codeCountry.getValue() == null) {
+    public Optional<Country> findByCode(String code) {
+        if (code == null || code.trim().isEmpty()) {
             return Optional.empty();
         }
-        return springDataRepository.findByCodeCountry(codeCountry.getValue()).map(mapper::toDomain);
+        return springDataRepository.findByCodeCountry(code.trim()).map(mapper::toDomain);
     }
 
     @Override
@@ -66,17 +65,25 @@ public class CountryRepositoryAdapter implements CountryRepository {
     }
 
     @Override
-    public void deleteById(UUID id) {
-        if (id != null) {
-            springDataRepository.deleteById(id);
+    public void deleteById(CountryId id) {
+        if (id != null && id.value() != null) {
+            springDataRepository.deleteById(id.value());
         }
     }
 
     @Override
-    public boolean existsById(UUID id) {
-        if (id == null) {
+    public boolean existsById(CountryId id) {
+        if (id == null || id.value() == null) {
             return false;
         }
-        return springDataRepository.existsById(id);
+        return springDataRepository.existsById(id.value());
+    }
+
+    @Override
+    public boolean existsByCode(String code) {
+        if (code == null || code.trim().isEmpty()) {
+            return false;
+        }
+        return springDataRepository.existsByCodeCountry(code.trim());
     }
 }

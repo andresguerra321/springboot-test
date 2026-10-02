@@ -1,163 +1,127 @@
 package com.backintro.domain.country.model.aggregate;
 
-import com.backintro.domain.country.model.valueobject.CountryCode;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
-/**
- * Agregado raíz de Country en la capa de Dominio.
- * POJO puro e independiente sin anotaciones de frameworks.
- */
-public class Country extends com.backintro.domain.common.model.AggregateRoot {
+import com.backintro.domain.common.model.AggregateRoot;
+import com.backintro.domain.country.event.CountryRegisteredEvent;
+import com.backintro.domain.country.event.CountryUpdatedEvent;
+import com.backintro.domain.country.model.valueobject.CountryId;
 
-    private UUID id;
-    private String nameCountry;
-    private CountryCode codeCountry;
-    private String description;
-    private Boolean isActive;
-    private String telephonePrefix;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+public class Country extends AggregateRoot {
+    private final CountryId id;
+    private String name;
+    private String code;
+    private boolean active;
 
-    public Country() {
-    }
+    private Country(
+        CountryId id,
+        String name,
+        String code,
+        boolean active) {
 
-    public Country(UUID id, String nameCountry, CountryCode codeCountry, String description,
-                   Boolean isActive, String telephonePrefix, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.nameCountry = nameCountry;
-        this.codeCountry = codeCountry;
-        this.description = description;
-        this.isActive = isActive != null ? isActive : Boolean.TRUE;
-        this.telephonePrefix = telephonePrefix;
-        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
-        this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
-    }
-
-    public Country(com.backintro.domain.country.model.valueobject.CountryId countryId, String nameCountry,
-                   CountryCode codeCountry, String description, Boolean isActive, String telephonePrefix,
-                   LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this(countryId != null ? countryId.value() : null, nameCountry, codeCountry, description, isActive, telephonePrefix, createdAt, updatedAt);
-    }
-
-    public static Country create(String nameCountry, String codeCountry, String description, String telephonePrefix) {
-        LocalDateTime now = LocalDateTime.now();
-        Country country = new Country(
-                UUID.randomUUID(),
-                nameCountry,
-                new CountryCode(codeCountry),
-                description,
-                Boolean.TRUE,
-                telephonePrefix,
-                now,
-                now
+        this.id = Objects.requireNonNull(
+            id,
+            "id must not be null"
         );
-        country.registerEvent(new com.backintro.domain.country.event.CountryRegisteredEvent(country.getCountryId(), now));
+
+        this.name = Objects.requireNonNull(
+            name,
+            "name must not be null"
+        );
+
+        this.code = Objects.requireNonNull(
+            code,
+            "code must not be null"
+        );
+
+        this.active = active;
+    }
+
+    public static Country register(
+        String name,
+        String code) {
+
+        CountryId id = CountryId.generate();
+        Country country = new Country(
+            id,
+            name,
+            code,
+            true
+        );
+
+        country.record(
+            new CountryRegisteredEvent(
+                id,
+                LocalDateTime.now()
+            )
+        );
+
         return country;
     }
 
-    public void update(String nameCountry, String codeCountry, String description, String telephonePrefix, Boolean isActive) {
-        if (nameCountry != null && !nameCountry.trim().isEmpty()) {
-            this.nameCountry = nameCountry;
-        }
-        if (codeCountry != null && !codeCountry.trim().isEmpty()) {
-            this.codeCountry = new CountryCode(codeCountry);
-        }
-        if (description != null) {
-            this.description = description;
-        }
-        if (telephonePrefix != null) {
-            this.telephonePrefix = telephonePrefix;
-        }
-        if (isActive != null) {
-            this.isActive = isActive;
-        }
-        this.updatedAt = LocalDateTime.now();
-        String codeStr = this.codeCountry != null ? this.codeCountry.getValue() : "";
-        registerEvent(new com.backintro.domain.country.event.CountryUpdatedEvent(
-                this.getCountryId(),
-                this.nameCountry,
-                codeStr,
-                this.updatedAt
-        ));
+    public void update(
+        String name,
+        String code) {
+
+        this.name = Objects.requireNonNull(
+            name,
+            "name must not be null"
+        );
+
+        this.code = Objects.requireNonNull(
+            code,
+            "code must not be null"
+        );
+
+        record(
+            new CountryUpdatedEvent(
+                this.id,
+                this.name,
+                this.code,
+                LocalDateTime.now()
+            )
+        );
     }
 
-    public void delete() {
-        registerEvent(new com.backintro.domain.country.event.CountryDeletedEvent(this.getCountryId(), LocalDateTime.now()));
+    public static Country reconstitute(
+        CountryId id,
+        String name,
+        String code,
+        boolean active) {
+        return new Country(id, name, code, active);
     }
 
-    public com.backintro.domain.country.model.valueobject.CountryId getCountryId() {
-        return id != null ? new com.backintro.domain.country.model.valueobject.CountryId(id) : null;
+    public static Country from(
+        CountryId id,
+        String name,
+        String code,
+        boolean active) {
+        return new Country(id, name, code, active);
     }
 
-    public void setCountryId(com.backintro.domain.country.model.valueobject.CountryId countryId) {
-        this.id = countryId != null ? countryId.value() : null;
+    public void deactivate() {
+        this.active = false;
     }
 
-    public UUID getId() {
+    public void activate() {
+        this.active = true;
+    }
+
+    public CountryId getId() {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public String getName() {
+        return name;
     }
 
-    public String getNameCountry() {
-        return nameCountry;
+    public String getCode() {
+        return code;
     }
 
-    public void setNameCountry(String nameCountry) {
-        this.nameCountry = nameCountry;
-    }
-
-    public CountryCode getCodeCountry() {
-        return codeCountry;
-    }
-
-    public void setCodeCountry(CountryCode codeCountry) {
-        this.codeCountry = codeCountry;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean active) {
-        isActive = active;
-    }
-
-    public String getTelephonePrefix() {
-        return telephonePrefix;
-    }
-
-    public void setTelephonePrefix(String telephonePrefix) {
-        this.telephonePrefix = telephonePrefix;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public boolean isActive() {
+        return active;
     }
 
     @Override
@@ -177,13 +141,9 @@ public class Country extends com.backintro.domain.common.model.AggregateRoot {
     public String toString() {
         return "Country{" +
                 "id=" + id +
-                ", nameCountry='" + nameCountry + '\'' +
-                ", codeCountry=" + codeCountry +
-                ", description='" + description + '\'' +
-                ", isActive=" + isActive +
-                ", telephonePrefix='" + telephonePrefix + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", active=" + active +
                 '}';
     }
 }
