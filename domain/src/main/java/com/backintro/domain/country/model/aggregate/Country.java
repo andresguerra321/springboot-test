@@ -75,7 +75,13 @@ public class Country extends com.backintro.domain.common.model.AggregateRoot {
             this.isActive = isActive;
         }
         this.updatedAt = LocalDateTime.now();
-        registerEvent(new com.backintro.domain.country.event.CountryUpdatedEvent(this.getCountryId(), this.updatedAt));
+        String codeStr = this.codeCountry != null ? this.codeCountry.getValue() : "";
+        registerEvent(new com.backintro.domain.country.event.CountryUpdatedEvent(
+                this.getCountryId(),
+                this.nameCountry,
+                codeStr,
+                this.updatedAt
+        ));
     }
 
     public void delete() {
