@@ -25,7 +25,7 @@ public class ChatConversationAiSettingJpaEntity {
     private boolean aiEnabled;
     @Column(name = "default_model_id", nullable = true)
     private UUID defaultModelId;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;

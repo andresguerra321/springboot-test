@@ -33,7 +33,7 @@ public class TreatmentPlanJpaEntity {
     private java.time.LocalDate endDate;
     @Column(name = "treatment_status_id", nullable = false)
     private UUID treatmentStatusId;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;

@@ -26,7 +26,7 @@ public class DocumentTypeJpaEntity {
     @Column(name = "active", nullable = false)
     private boolean active;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)

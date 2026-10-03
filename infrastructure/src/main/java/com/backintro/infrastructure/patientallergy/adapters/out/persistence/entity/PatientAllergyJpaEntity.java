@@ -33,7 +33,7 @@ public class PatientAllergyJpaEntity {
     private java.time.LocalDateTime recordedAt;
     @Column(name = "recorded_by", nullable = true)
     private UUID recordedBy;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)

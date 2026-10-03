@@ -27,7 +27,7 @@ public class ChatEscalationJpaEntity {
     private boolean fromAi;
     @Column(name = "reason", nullable = true)
     private String reason;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     public ChatEscalationJpaEntity() {}

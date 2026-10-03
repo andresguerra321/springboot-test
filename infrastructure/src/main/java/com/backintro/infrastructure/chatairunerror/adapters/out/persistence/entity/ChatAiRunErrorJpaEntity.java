@@ -27,7 +27,7 @@ public class ChatAiRunErrorJpaEntity {
     private String errorCode;
     @Column(name = "provider_error_id", nullable = true, length = 120)
     private String providerErrorId;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     public ChatAiRunErrorJpaEntity() {}

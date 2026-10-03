@@ -31,7 +31,7 @@ public class ContactJpaEntity {
     private UUID createdBy;
     @Column(name = "updated_by", nullable = true)
     private UUID updatedBy;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)

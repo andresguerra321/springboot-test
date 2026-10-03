@@ -22,7 +22,7 @@ public class StudyJpaEntity {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)

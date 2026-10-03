@@ -128,23 +128,16 @@ public class PatientContact extends AggregateRoot {
     public UUID getPatientId() {
         return patientId();
     }
-    public boolean isActive() {
+    public boolean isPrimaryContact() {
         return primaryContact();
     }
-    public boolean isActive() {
+    public boolean isEmergencyContact() {
         return emergencyContact();
     }
     public UUID getRelationshipTypeId() {
         return relationshipTypeId();
     }
 
-    public void deactivate() {
-        this.active = false;
-    }
-
-    public void activate() {
-        this.active = true;
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

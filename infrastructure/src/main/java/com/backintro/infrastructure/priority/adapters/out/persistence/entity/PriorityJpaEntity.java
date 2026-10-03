@@ -21,7 +21,7 @@ public class PriorityJpaEntity {
 
     @Column(name = "name_priority", nullable = false, length = 50)
     private String namePriority;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;

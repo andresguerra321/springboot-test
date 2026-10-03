@@ -30,7 +30,7 @@ public class CountryJpaEntity {
     @Column(name = "telephone_prefix", nullable = true, length = 5)
     private String telephonePrefix;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)

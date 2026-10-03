@@ -29,7 +29,7 @@ public class ChatMessageJpaEntity {
     private String content;
     @Column(name = "metadata", nullable = true)
     private String metadata;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     public ChatMessageJpaEntity() {}

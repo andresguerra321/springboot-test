@@ -29,7 +29,7 @@ public class ChatAiRunMetricJpaEntity {
     private Integer totalTokens;
     @Column(name = "cost", nullable = true)
     private java.math.BigDecimal cost;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     public ChatAiRunMetricJpaEntity() {}

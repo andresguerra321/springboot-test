@@ -30,7 +30,7 @@ public class StateRegionJpaEntity {
     @Column(name = "country_id", nullable = false)
     private UUID countryId;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)

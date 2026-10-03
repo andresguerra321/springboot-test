@@ -25,7 +25,7 @@ public class EmailContactJpaEntity {
     private String email;
     @Column(name = "notes", nullable = true)
     private String notes;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)

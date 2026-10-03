@@ -35,7 +35,7 @@ public class ClinicalNoteJpaEntity {
     private String additionalNotes;
     @Column(name = "signed_at", nullable = true)
     private java.time.LocalDateTime signedAt;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;

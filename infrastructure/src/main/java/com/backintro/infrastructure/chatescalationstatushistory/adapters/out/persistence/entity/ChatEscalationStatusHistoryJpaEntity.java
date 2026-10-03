@@ -25,7 +25,7 @@ public class ChatEscalationStatusHistoryJpaEntity {
     private UUID escalationStatusId;
     @Column(name = "changed_at", nullable = false)
     private java.time.LocalDateTime changedAt;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     public ChatEscalationStatusHistoryJpaEntity() {}

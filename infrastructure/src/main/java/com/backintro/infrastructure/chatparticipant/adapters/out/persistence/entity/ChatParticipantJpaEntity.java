@@ -27,7 +27,7 @@ public class ChatParticipantJpaEntity {
     private UUID patientId;
     @Column(name = "professional_id", nullable = true)
     private UUID professionalId;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;

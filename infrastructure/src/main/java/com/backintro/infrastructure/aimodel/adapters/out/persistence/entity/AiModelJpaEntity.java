@@ -35,7 +35,7 @@ public class AiModelJpaEntity {
     private Integer contextWindow;
     @Column(name = "is_active", nullable = false)
     private boolean active;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
