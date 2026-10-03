@@ -10,6 +10,18 @@ Durante el desarrollo en esta rama, se llevaron a cabo los siguientes hitos:
 3. **Automatización a Gran Escala:** Se diseñaron scripts de metaprogramación que orquestaron la creación paralela de **1,352 archivos Java** (26 componentes por módulo).
 4. **Verificación de Integridad Espejo:** Se corrió una auditoría algorítmica para validar que las clases Java fuesen un reflejo 1 a 1 de la base de datos Flyway. Durante este proceso se rectificaron relaciones de llaves y mapeos de columnas de auditoría (`created_by`, `updated_by`).
 
+## ⚖️ Reglas de Integridad y Resolución de Ambigüedades
+Durante el desarrollo se establecieron reglas unificadas para resolver ambigüedades arquitectónicas a lo largo de los 52 módulos:
+
+1. **Gestión de Autoría (`created_by`, `updated_by`, etc.):**
+   * Cuando la acción debe ser realizada estrictamente por personal interno de la clínica, la columna tiene una restricción de llave foránea hacia `professionals(id)` (Ej. `patients.created_by`, `encounters.updated_by`). Esto se garantizó mediante la migración de Flyway `V54`.
+   * Cuando la acción puede ser ejecutada por actores externos (como pacientes en la app) o actores del sistema (como inteligencia artificial), la columna se mantiene como un identificador UUID puro sin forzar una restricción de llave.
+2. **Manejo de Excepciones de Integridad Relacional:**
+   * La Base de Datos es la única autoridad de verdad para la integridad referencial.
+   * Todos los `*ExceptionHandler` capturan globalmente la excepción `DataIntegrityViolationException` inyectada por JPA/Hibernate.
+   * Se retorna **400 Bad Request** de forma unificada si se intenta ingresar una FK inexistente en una inserción o actualización.
+   * Se retorna **409 Conflict** de forma unificada si se detecta una violación de restricción única (*Unique Constraint*).
+
 ## 🧱 Estructura Hexagonal (Puertos y Adaptadores)
 La arquitectura de este proyecto respeta el principio de **Inversión de Dependencias** y el patrón de **Puertos y Adaptadores**, garantizando que la lógica central del negocio sea completamente agnóstica a la base de datos o la interfaz web.
 
