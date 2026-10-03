@@ -26,7 +26,7 @@ Cada uno de los 52 módulos se divide estrictamente en 3 componentes aislados:
 *Orquesta el flujo de información entre el exterior y el dominio, implementando los requerimientos del sistema.*
 *   **Use Cases:** Diseño atómico modular. Cada archivo representa una única acción (Ej. `RegisterPatientUseCase.java`, `ListPatientUseCase.java`).
 *   **Commands:** Records inmutables (`RegisterPatientCommand`) para transportar la intención operativa de forma segura hacia el caso de uso.
-*   **Response DTOs:** Transferencia de datos de salida. Aquí se **resuelven activamente las llaves foráneas** mediante inyección de repositorios del dominio (Ej. Retornar el `cityName` real mapeando un `cityId`).
+*   **Response DTOs:** Transferencia de datos de salida. Aquí se **resuelve el nombre de las FK a catálogos** mediante inyección de repositorios del dominio (Ej. Retornar el `cityName` real mapeando un `cityId`).
 
 ### 3. Infraestructura (`/infrastructure`) - Los Adaptadores
 *Se encarga de los detalles técnicos, la persistencia JPA y el transporte HTTP.*

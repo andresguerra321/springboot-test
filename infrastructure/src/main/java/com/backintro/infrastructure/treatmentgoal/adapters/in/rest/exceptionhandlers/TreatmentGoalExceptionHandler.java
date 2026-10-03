@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -61,6 +62,30 @@ public class TreatmentGoalExceptionHandler {
         body.put("error", "Error de validacion en la peticion");
         body.put("details", fieldErrors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        
+        String msg = ex.getMessage();
+        if (msg != null && msg.toLowerCase().contains("foreign key constraint")) {
+            body.put("status", HttpStatus.BAD_REQUEST.value());
+            body.put("error", "Error de integridad relacional: Llave forÃ¡nea no encontrada");
+            body.put("message", "Una o mÃ¡s dependencias referenciadas no existen en la base de datos.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        } else if (msg != null && msg.toLowerCase().contains("unique constraint")) {
+            body.put("status", HttpStatus.CONFLICT.value());
+            body.put("error", "Error de integridad relacional: Registro duplicado");
+            body.put("message", "Ya existe un registro con las mismas llaves Ãºnicas.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+        }
+        
+        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        body.put("error", "Error interno de integridad de datos");
+        body.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
     @ExceptionHandler(Exception.class)

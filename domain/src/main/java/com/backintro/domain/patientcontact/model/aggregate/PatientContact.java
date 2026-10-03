@@ -137,7 +137,6 @@ public class PatientContact extends AggregateRoot {
     public UUID getRelationshipTypeId() {
         return relationshipTypeId();
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
