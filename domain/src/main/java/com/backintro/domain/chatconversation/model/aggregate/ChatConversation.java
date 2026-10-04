@@ -14,7 +14,7 @@ public class ChatConversation extends AggregateRoot {
     private UUID conversationStatusId;
     private UUID priorityId;
     private java.time.LocalDateTime lastMessageAt;
-    private boolean closed;
+    private Boolean closed;
     private java.time.LocalDateTime closedAt;
     private UUID closedBy;
 
@@ -23,7 +23,7 @@ public class ChatConversation extends AggregateRoot {
         UUID conversationStatusId,
         UUID priorityId,
         java.time.LocalDateTime lastMessageAt,
-        boolean closed,
+        Boolean closed,
         java.time.LocalDateTime closedAt,
         UUID closedBy) {
 
@@ -40,7 +40,7 @@ public class ChatConversation extends AggregateRoot {
         UUID conversationStatusId,
         UUID priorityId,
         java.time.LocalDateTime lastMessageAt,
-        boolean closed,
+        Boolean closed,
         java.time.LocalDateTime closedAt,
         UUID closedBy) {
 
@@ -68,7 +68,7 @@ public class ChatConversation extends AggregateRoot {
         UUID conversationStatusId,
         UUID priorityId,
         java.time.LocalDateTime lastMessageAt,
-        boolean closed,
+        Boolean closed,
         java.time.LocalDateTime closedAt,
         UUID closedBy) {
         return new ChatConversation(
@@ -85,7 +85,7 @@ public class ChatConversation extends AggregateRoot {
         UUID conversationStatusId,
         UUID priorityId,
         java.time.LocalDateTime lastMessageAt,
-        boolean closed,
+        Boolean closed,
         java.time.LocalDateTime closedAt,
         UUID closedBy) {
 
@@ -121,7 +121,7 @@ public class ChatConversation extends AggregateRoot {
     public java.time.LocalDateTime lastMessageAt() {
         return lastMessageAt;
     }
-    public boolean closed() {
+    public Boolean closed() {
         return closed;
     }
     public java.time.LocalDateTime closedAt() {
@@ -144,7 +144,7 @@ public class ChatConversation extends AggregateRoot {
     public java.time.LocalDateTime getLastMessageAt() {
         return lastMessageAt();
     }
-    public boolean isClosed() {
+    public Boolean isClosed() {
         return closed();
     }
     public java.time.LocalDateTime getClosedAt() {

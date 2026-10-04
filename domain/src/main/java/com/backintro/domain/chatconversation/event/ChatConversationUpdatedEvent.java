@@ -12,7 +12,7 @@ public record ChatConversationUpdatedEvent(
     UUID conversationStatusId,
     UUID priorityId,
     java.time.LocalDateTime lastMessageAt,
-    boolean closed,
+    Boolean closed,
     java.time.LocalDateTime closedAt,
     UUID closedBy,
     LocalDateTime occurredOn

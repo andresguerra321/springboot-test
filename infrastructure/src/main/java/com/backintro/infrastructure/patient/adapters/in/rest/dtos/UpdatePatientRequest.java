@@ -2,10 +2,11 @@ package com.backintro.infrastructure.patient.adapters.in.rest.dtos;
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UpdatePatientRequest(
-        @jakarta.validation.constraints.NotNull(message = "documentTypeId is required")
+        @NotNull(message = "documentTypeId is required")
         UUID documentTypeId,
 
         @NotBlank(message = "documentNumber is required")
@@ -23,7 +24,7 @@ public record UpdatePatientRequest(
 
         java.time.LocalDate birthDate,
 
-        @jakarta.validation.constraints.NotNull(message = "biologicalSexId is required")
+        @NotNull(message = "biologicalSexId is required")
         UUID biologicalSexId,
 
         UUID genderIdentity,

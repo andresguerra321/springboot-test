@@ -15,7 +15,7 @@ public class ProfessionalStudy extends AggregateRoot {
     private UUID professionalId;
     private String title;
     private String university;
-    private boolean valid;
+    private Boolean valid;
     private String resolutionNumber;
     private UUID countryId;
 
@@ -25,7 +25,7 @@ public class ProfessionalStudy extends AggregateRoot {
         UUID professionalId,
         String title,
         String university,
-        boolean valid,
+        Boolean valid,
         String resolutionNumber,
         UUID countryId) {
 
@@ -44,7 +44,7 @@ public class ProfessionalStudy extends AggregateRoot {
         UUID professionalId,
         String title,
         String university,
-        boolean valid,
+        Boolean valid,
         String resolutionNumber,
         UUID countryId) {
 
@@ -74,7 +74,7 @@ public class ProfessionalStudy extends AggregateRoot {
         UUID professionalId,
         String title,
         String university,
-        boolean valid,
+        Boolean valid,
         String resolutionNumber,
         UUID countryId) {
         return new ProfessionalStudy(
@@ -93,7 +93,7 @@ public class ProfessionalStudy extends AggregateRoot {
         UUID professionalId,
         String title,
         String university,
-        boolean valid,
+        Boolean valid,
         String resolutionNumber,
         UUID countryId) {
 
@@ -134,7 +134,7 @@ public class ProfessionalStudy extends AggregateRoot {
     public String university() {
         return university;
     }
-    public boolean valid() {
+    public Boolean valid() {
         return valid;
     }
     public String resolutionNumber() {
@@ -160,7 +160,7 @@ public class ProfessionalStudy extends AggregateRoot {
     public String getUniversity() {
         return university();
     }
-    public boolean isValid() {
+    public Boolean isValid() {
         return valid();
     }
     public String getResolutionNumber() {

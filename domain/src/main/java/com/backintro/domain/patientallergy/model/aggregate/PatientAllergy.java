@@ -15,7 +15,7 @@ public class PatientAllergy extends AggregateRoot {
     private String substance;
     private String reaction;
     private String severity;
-    private boolean active;
+    private Boolean active;
     private java.time.LocalDateTime recordedAt;
     private UUID recordedBy;
 
@@ -25,7 +25,7 @@ public class PatientAllergy extends AggregateRoot {
         String substance,
         String reaction,
         String severity,
-        boolean active,
+        Boolean active,
         java.time.LocalDateTime recordedAt,
         UUID recordedBy) {
 
@@ -73,7 +73,7 @@ public class PatientAllergy extends AggregateRoot {
         String substance,
         String reaction,
         String severity,
-        boolean active,
+        Boolean active,
         java.time.LocalDateTime recordedAt,
         UUID recordedBy) {
         return new PatientAllergy(
@@ -130,7 +130,7 @@ public class PatientAllergy extends AggregateRoot {
     public String severity() {
         return severity;
     }
-    public boolean active() {
+    public Boolean active() {
         return active;
     }
     public java.time.LocalDateTime recordedAt() {

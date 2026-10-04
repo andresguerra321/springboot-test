@@ -2,13 +2,14 @@ package com.backintro.infrastructure.professionalstudy.adapters.in.rest.dtos;
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record CreateProfessionalStudyRequest(
-        @jakarta.validation.constraints.NotNull(message = "studyId is required")
+        @NotNull(message = "studyId is required")
         UUID studyId,
 
-        @jakarta.validation.constraints.NotNull(message = "professionalId is required")
+        @NotNull(message = "professionalId is required")
         UUID professionalId,
 
         @NotBlank(message = "title is required")
@@ -16,7 +17,7 @@ public record CreateProfessionalStudyRequest(
 
         String university,
 
-        boolean valid,
+        Boolean valid,
 
         String resolutionNumber,
 

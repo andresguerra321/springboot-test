@@ -26,7 +26,7 @@ public class ChatConversationJpaEntity {
     @Column(name = "last_message_at", nullable = true)
     private java.time.LocalDateTime lastMessageAt;
     @Column(name = "closed", nullable = true)
-    private boolean closed;
+    private Boolean closed;
     @Column(name = "closed_at", nullable = true)
     private java.time.LocalDateTime closedAt;
     @Column(name = "closed_by", nullable = true)
@@ -69,10 +69,10 @@ public class ChatConversationJpaEntity {
     public void setLastMessageAt(java.time.LocalDateTime lastMessageAt) {
         this.lastMessageAt = lastMessageAt;
     }
-    public boolean isClosed() {
+    public Boolean isClosed() {
         return closed;
     }
-    public void setClosed(boolean closed) {
+    public void setClosed(Boolean closed) {
         this.closed = closed;
     }
     public java.time.LocalDateTime getClosedAt() {

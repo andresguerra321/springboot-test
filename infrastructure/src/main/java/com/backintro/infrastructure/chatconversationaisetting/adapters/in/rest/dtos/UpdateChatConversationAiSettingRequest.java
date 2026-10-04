@@ -2,13 +2,15 @@ package com.backintro.infrastructure.chatconversationaisetting.adapters.in.rest.
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UpdateChatConversationAiSettingRequest(
-        @jakarta.validation.constraints.NotNull(message = "conversationId is required")
+        @NotNull(message = "conversationId is required")
         UUID conversationId,
 
-        boolean aiEnabled,
+        @NotNull(message = "aiEnabled is required")
+        Boolean aiEnabled,
 
         UUID defaultModelId
 ) {}

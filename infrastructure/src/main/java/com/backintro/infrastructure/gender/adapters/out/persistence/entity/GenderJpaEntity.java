@@ -19,7 +19,7 @@ public class GenderJpaEntity {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "description", nullable = false, length = 500)
+    @Column(name = "description", nullable = false, length = 50)
     private String description;
 
     @Column(name = "created_at", updatable = false, nullable = false)

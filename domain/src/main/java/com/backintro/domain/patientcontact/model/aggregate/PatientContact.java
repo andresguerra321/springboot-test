@@ -13,16 +13,16 @@ public class PatientContact extends AggregateRoot {
     private final PatientContactId id;
     private UUID contactId;
     private UUID patientId;
-    private boolean primaryContact;
-    private boolean emergencyContact;
+    private Boolean primaryContact;
+    private Boolean emergencyContact;
     private UUID relationshipTypeId;
 
     private PatientContact(
         PatientContactId id,
         UUID contactId,
         UUID patientId,
-        boolean primaryContact,
-        boolean emergencyContact,
+        Boolean primaryContact,
+        Boolean emergencyContact,
         UUID relationshipTypeId) {
 
         this.id = Objects.requireNonNull(id, "id must not be null");
@@ -36,8 +36,8 @@ public class PatientContact extends AggregateRoot {
     public static PatientContact register(
         UUID contactId,
         UUID patientId,
-        boolean primaryContact,
-        boolean emergencyContact,
+        Boolean primaryContact,
+        Boolean emergencyContact,
         UUID relationshipTypeId) {
 
         PatientContactId id = PatientContactId.generate();
@@ -62,8 +62,8 @@ public class PatientContact extends AggregateRoot {
         PatientContactId id,
         UUID contactId,
         UUID patientId,
-        boolean primaryContact,
-        boolean emergencyContact,
+        Boolean primaryContact,
+        Boolean emergencyContact,
         UUID relationshipTypeId) {
         return new PatientContact(
             id,
@@ -77,8 +77,8 @@ public class PatientContact extends AggregateRoot {
     public void update(
         UUID contactId,
         UUID patientId,
-        boolean primaryContact,
-        boolean emergencyContact,
+        Boolean primaryContact,
+        Boolean emergencyContact,
         UUID relationshipTypeId) {
 
         this.contactId = Objects.requireNonNull(contactId);
@@ -108,10 +108,10 @@ public class PatientContact extends AggregateRoot {
     public UUID patientId() {
         return patientId;
     }
-    public boolean primaryContact() {
+    public Boolean primaryContact() {
         return primaryContact;
     }
-    public boolean emergencyContact() {
+    public Boolean emergencyContact() {
         return emergencyContact;
     }
     public UUID relationshipTypeId() {
@@ -128,10 +128,10 @@ public class PatientContact extends AggregateRoot {
     public UUID getPatientId() {
         return patientId();
     }
-    public boolean isPrimaryContact() {
+    public Boolean isPrimaryContact() {
         return primaryContact();
     }
-    public boolean isEmergencyContact() {
+    public Boolean isEmergencyContact() {
         return emergencyContact();
     }
     public UUID getRelationshipTypeId() {

@@ -24,7 +24,7 @@ public class ChatEscalationJpaEntity {
     @Column(name = "status_id", nullable = false)
     private UUID statusId;
     @Column(name = "from_ai", nullable = true)
-    private boolean fromAi;
+    private Boolean fromAi;
     @Column(name = "reason", nullable = true)
     private String reason;
     @Column(name = "created_at", updatable = false, nullable = false)
@@ -52,10 +52,10 @@ public class ChatEscalationJpaEntity {
     public void setStatusId(UUID statusId) {
         this.statusId = statusId;
     }
-    public boolean isFromAi() {
+    public Boolean isFromAi() {
         return fromAi;
     }
-    public void setFromAi(boolean fromAi) {
+    public void setFromAi(Boolean fromAi) {
         this.fromAi = fromAi;
     }
     public String getReason() {

@@ -8,8 +8,8 @@ public record PatientContactResponse(
         UUID contactId,
         UUID patientId,
         String patientName,
-        boolean primaryContact,
-        boolean emergencyContact,
+        Boolean primaryContact,
+        Boolean emergencyContact,
         UUID relationshipTypeId,
         String relationshipTypeName
 ) {

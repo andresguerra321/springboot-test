@@ -11,7 +11,7 @@ public record ProfessionalStudyResponse(
         String professionalName,
         String title,
         String university,
-        boolean valid,
+        Boolean valid,
         String resolutionNumber,
         UUID countryId,
         String countryName,

@@ -2,14 +2,18 @@ package com.backintro.infrastructure.chatescalationassignment.adapters.in.rest.d
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UpdateChatEscalationAssignmentRequest(
-        @jakarta.validation.constraints.NotNull(message = "escalationId is required")
+        @NotNull(message = "escalationId is required")
         UUID escalationId,
 
-        @jakarta.validation.constraints.NotNull(message = "professionalId is required")
+        @NotNull(message = "professionalId is required")
         UUID professionalId,
+
+        @NotNull(message = "assignedAt is required")
+
 
         java.time.LocalDateTime assignedAt
 ) {}

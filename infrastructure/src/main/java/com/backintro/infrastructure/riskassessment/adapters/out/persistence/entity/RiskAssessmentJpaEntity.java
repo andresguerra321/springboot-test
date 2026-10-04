@@ -24,15 +24,15 @@ public class RiskAssessmentJpaEntity {
     @Column(name = "risk_level_id", nullable = false)
     private UUID riskLevelId;
     @Column(name = "suicidal_ideation", nullable = true)
-    private boolean suicidalIdeation;
+    private Boolean suicidalIdeation;
     @Column(name = "suicide_plan", nullable = true)
-    private boolean suicidePlan;
+    private Boolean suicidePlan;
     @Column(name = "suicide_intent", nullable = true)
-    private boolean suicideIntent;
+    private Boolean suicideIntent;
     @Column(name = "self_harm", nullable = true)
-    private boolean selfHarm;
+    private Boolean selfHarm;
     @Column(name = "harm_to_others", nullable = true)
-    private boolean harmToOthers;
+    private Boolean harmToOthers;
     @Column(name = "protective_factors", nullable = true)
     private String protectiveFactors;
     @Column(name = "risk_factors", nullable = true)
@@ -63,34 +63,34 @@ public class RiskAssessmentJpaEntity {
     public void setRiskLevelId(UUID riskLevelId) {
         this.riskLevelId = riskLevelId;
     }
-    public boolean isSuicidalIdeation() {
+    public Boolean isSuicidalIdeation() {
         return suicidalIdeation;
     }
-    public void setSuicidalIdeation(boolean suicidalIdeation) {
+    public void setSuicidalIdeation(Boolean suicidalIdeation) {
         this.suicidalIdeation = suicidalIdeation;
     }
-    public boolean isSuicidePlan() {
+    public Boolean isSuicidePlan() {
         return suicidePlan;
     }
-    public void setSuicidePlan(boolean suicidePlan) {
+    public void setSuicidePlan(Boolean suicidePlan) {
         this.suicidePlan = suicidePlan;
     }
-    public boolean isSuicideIntent() {
+    public Boolean isSuicideIntent() {
         return suicideIntent;
     }
-    public void setSuicideIntent(boolean suicideIntent) {
+    public void setSuicideIntent(Boolean suicideIntent) {
         this.suicideIntent = suicideIntent;
     }
-    public boolean isSelfHarm() {
+    public Boolean isSelfHarm() {
         return selfHarm;
     }
-    public void setSelfHarm(boolean selfHarm) {
+    public void setSelfHarm(Boolean selfHarm) {
         this.selfHarm = selfHarm;
     }
-    public boolean isHarmToOthers() {
+    public Boolean isHarmToOthers() {
         return harmToOthers;
     }
-    public void setHarmToOthers(boolean harmToOthers) {
+    public void setHarmToOthers(Boolean harmToOthers) {
         this.harmToOthers = harmToOthers;
     }
     public String getProtectiveFactors() {

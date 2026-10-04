@@ -10,7 +10,7 @@ public record PatientAllergyResponse(
         String substance,
         String reaction,
         String severity,
-        boolean active,
+        Boolean active,
         java.time.LocalDateTime recordedAt,
         UUID recordedBy,
         LocalDateTime createdAt,

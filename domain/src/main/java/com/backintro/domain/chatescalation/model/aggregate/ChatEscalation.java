@@ -13,14 +13,14 @@ public class ChatEscalation extends AggregateRoot {
     private final ChatEscalationId id;
     private UUID conversationId;
     private UUID statusId;
-    private boolean fromAi;
+    private Boolean fromAi;
     private String reason;
 
     private ChatEscalation(
         ChatEscalationId id,
         UUID conversationId,
         UUID statusId,
-        boolean fromAi,
+        Boolean fromAi,
         String reason) {
 
         this.id = Objects.requireNonNull(id, "id must not be null");
@@ -33,7 +33,7 @@ public class ChatEscalation extends AggregateRoot {
     public static ChatEscalation register(
         UUID conversationId,
         UUID statusId,
-        boolean fromAi,
+        Boolean fromAi,
         String reason) {
 
         ChatEscalationId id = ChatEscalationId.generate();
@@ -57,7 +57,7 @@ public class ChatEscalation extends AggregateRoot {
         ChatEscalationId id,
         UUID conversationId,
         UUID statusId,
-        boolean fromAi,
+        Boolean fromAi,
         String reason) {
         return new ChatEscalation(
             id,
@@ -70,7 +70,7 @@ public class ChatEscalation extends AggregateRoot {
     public void update(
         UUID conversationId,
         UUID statusId,
-        boolean fromAi,
+        Boolean fromAi,
         String reason) {
 
         this.conversationId = Objects.requireNonNull(conversationId);
@@ -98,7 +98,7 @@ public class ChatEscalation extends AggregateRoot {
     public UUID statusId() {
         return statusId;
     }
-    public boolean fromAi() {
+    public Boolean fromAi() {
         return fromAi;
     }
     public String reason() {
@@ -115,7 +115,7 @@ public class ChatEscalation extends AggregateRoot {
     public UUID getStatusId() {
         return statusId();
     }
-    public boolean isFromAi() {
+    public Boolean isFromAi() {
         return fromAi();
     }
     public String getReason() {

@@ -24,9 +24,9 @@ public class PatientContactJpaEntity {
     @Column(name = "patient_id", nullable = false)
     private UUID patientId;
     @Column(name = "is_primary_contact", nullable = true)
-    private boolean primaryContact;
+    private Boolean primaryContact;
     @Column(name = "is_emergency_contact", nullable = true)
-    private boolean emergencyContact;
+    private Boolean emergencyContact;
     @Column(name = "relationship_type_id", nullable = true)
     private UUID relationshipTypeId;
 
@@ -47,16 +47,16 @@ public class PatientContactJpaEntity {
     public void setPatientId(UUID patientId) {
         this.patientId = patientId;
     }
-    public boolean isPrimaryContact() {
+    public Boolean isPrimaryContact() {
         return primaryContact;
     }
-    public void setPrimaryContact(boolean primaryContact) {
+    public void setPrimaryContact(Boolean primaryContact) {
         this.primaryContact = primaryContact;
     }
-    public boolean isEmergencyContact() {
+    public Boolean isEmergencyContact() {
         return emergencyContact;
     }
-    public void setEmergencyContact(boolean emergencyContact) {
+    public void setEmergencyContact(Boolean emergencyContact) {
         this.emergencyContact = emergencyContact;
     }
     public UUID getRelationshipTypeId() {

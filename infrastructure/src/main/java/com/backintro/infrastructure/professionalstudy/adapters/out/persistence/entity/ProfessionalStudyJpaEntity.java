@@ -28,7 +28,7 @@ public class ProfessionalStudyJpaEntity {
     @Column(name = "university", nullable = true, length = 100)
     private String university;
     @Column(name = "is_valid", nullable = true)
-    private boolean valid;
+    private Boolean valid;
     @Column(name = "resolution_number", nullable = true, length = 60)
     private String resolutionNumber;
     @Column(name = "country_id", nullable = true)
@@ -78,10 +78,10 @@ public class ProfessionalStudyJpaEntity {
     public void setUniversity(String university) {
         this.university = university;
     }
-    public boolean isValid() {
+    public Boolean isValid() {
         return valid;
     }
-    public void setValid(boolean valid) {
+    public void setValid(Boolean valid) {
         this.valid = valid;
     }
     public String getResolutionNumber() {

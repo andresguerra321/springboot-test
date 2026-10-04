@@ -2,6 +2,7 @@ package com.backintro.infrastructure.citymunicipality.adapters.in.rest.dtos;
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UpdateCityMunicipalityRequest(
@@ -12,6 +13,6 @@ public record UpdateCityMunicipalityRequest(
 
         String description,
 
-        @jakarta.validation.constraints.NotNull(message = "regionId is required")
+        @NotNull(message = "regionId is required")
         UUID regionId
 ) {}

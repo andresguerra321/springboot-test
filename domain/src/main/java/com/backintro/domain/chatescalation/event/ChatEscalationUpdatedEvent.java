@@ -11,7 +11,7 @@ public record ChatEscalationUpdatedEvent(
     ChatEscalationId id,
     UUID conversationId,
     UUID statusId,
-    boolean fromAi,
+    Boolean fromAi,
     String reason,
     LocalDateTime occurredOn
 ) implements DomainEvent {

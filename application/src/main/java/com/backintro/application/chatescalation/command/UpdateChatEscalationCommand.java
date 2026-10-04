@@ -9,7 +9,7 @@ public record UpdateChatEscalationCommand(
         ChatEscalationId id,
         UUID conversationId,
         UUID statusId,
-        boolean fromAi,
+        Boolean fromAi,
         String reason
 ) {
     public UpdateChatEscalationCommand {

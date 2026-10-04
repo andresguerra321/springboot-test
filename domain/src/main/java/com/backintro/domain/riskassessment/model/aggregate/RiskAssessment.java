@@ -13,11 +13,11 @@ public class RiskAssessment extends AggregateRoot {
     private final RiskAssessmentId id;
     private UUID encounterId;
     private UUID riskLevelId;
-    private boolean suicidalIdeation;
-    private boolean suicidePlan;
-    private boolean suicideIntent;
-    private boolean selfHarm;
-    private boolean harmToOthers;
+    private Boolean suicidalIdeation;
+    private Boolean suicidePlan;
+    private Boolean suicideIntent;
+    private Boolean selfHarm;
+    private Boolean harmToOthers;
     private String protectiveFactors;
     private String riskFactors;
     private String clinicalActions;
@@ -29,11 +29,11 @@ public class RiskAssessment extends AggregateRoot {
         RiskAssessmentId id,
         UUID encounterId,
         UUID riskLevelId,
-        boolean suicidalIdeation,
-        boolean suicidePlan,
-        boolean suicideIntent,
-        boolean selfHarm,
-        boolean harmToOthers,
+        Boolean suicidalIdeation,
+        Boolean suicidePlan,
+        Boolean suicideIntent,
+        Boolean selfHarm,
+        Boolean harmToOthers,
         String protectiveFactors,
         String riskFactors,
         String clinicalActions,
@@ -60,11 +60,11 @@ public class RiskAssessment extends AggregateRoot {
     public static RiskAssessment register(
         UUID encounterId,
         UUID riskLevelId,
-        boolean suicidalIdeation,
-        boolean suicidePlan,
-        boolean suicideIntent,
-        boolean selfHarm,
-        boolean harmToOthers,
+        Boolean suicidalIdeation,
+        Boolean suicidePlan,
+        Boolean suicideIntent,
+        Boolean selfHarm,
+        Boolean harmToOthers,
         String protectiveFactors,
         String riskFactors,
         String clinicalActions,
@@ -102,11 +102,11 @@ public class RiskAssessment extends AggregateRoot {
         RiskAssessmentId id,
         UUID encounterId,
         UUID riskLevelId,
-        boolean suicidalIdeation,
-        boolean suicidePlan,
-        boolean suicideIntent,
-        boolean selfHarm,
-        boolean harmToOthers,
+        Boolean suicidalIdeation,
+        Boolean suicidePlan,
+        Boolean suicideIntent,
+        Boolean selfHarm,
+        Boolean harmToOthers,
         String protectiveFactors,
         String riskFactors,
         String clinicalActions,
@@ -133,11 +133,11 @@ public class RiskAssessment extends AggregateRoot {
     public void update(
         UUID encounterId,
         UUID riskLevelId,
-        boolean suicidalIdeation,
-        boolean suicidePlan,
-        boolean suicideIntent,
-        boolean selfHarm,
-        boolean harmToOthers,
+        Boolean suicidalIdeation,
+        Boolean suicidePlan,
+        Boolean suicideIntent,
+        Boolean selfHarm,
+        Boolean harmToOthers,
         String protectiveFactors,
         String riskFactors,
         String clinicalActions,
@@ -188,19 +188,19 @@ public class RiskAssessment extends AggregateRoot {
     public UUID riskLevelId() {
         return riskLevelId;
     }
-    public boolean suicidalIdeation() {
+    public Boolean suicidalIdeation() {
         return suicidalIdeation;
     }
-    public boolean suicidePlan() {
+    public Boolean suicidePlan() {
         return suicidePlan;
     }
-    public boolean suicideIntent() {
+    public Boolean suicideIntent() {
         return suicideIntent;
     }
-    public boolean selfHarm() {
+    public Boolean selfHarm() {
         return selfHarm;
     }
-    public boolean harmToOthers() {
+    public Boolean harmToOthers() {
         return harmToOthers;
     }
     public String protectiveFactors() {
@@ -232,19 +232,19 @@ public class RiskAssessment extends AggregateRoot {
     public UUID getRiskLevelId() {
         return riskLevelId();
     }
-    public boolean isSuicidalIdeation() {
+    public Boolean isSuicidalIdeation() {
         return suicidalIdeation();
     }
-    public boolean isSuicidePlan() {
+    public Boolean isSuicidePlan() {
         return suicidePlan();
     }
-    public boolean isSuicideIntent() {
+    public Boolean isSuicideIntent() {
         return suicideIntent();
     }
-    public boolean isSelfHarm() {
+    public Boolean isSelfHarm() {
         return selfHarm();
     }
-    public boolean isHarmToOthers() {
+    public Boolean isHarmToOthers() {
         return harmToOthers();
     }
     public String getProtectiveFactors() {

@@ -5,10 +5,16 @@ Este repositorio (rama `boundcontext`) alberga la arquitectura hexagonal complet
 
 ## 🚀 Acciones Realizadas
 Durante el desarrollo en esta rama, se llevaron a cabo los siguientes hitos:
-1. **Auditoría de Esquemas SQL:** Se analizaron los scripts de migración de Flyway (`V1` a `V26`) para mapear 52 tablas, deduciendo tipos de datos exactos, restricciones (Not Null) y relaciones de llave foránea.
+1. **Auditoría de Esquemas SQL:** Se analizaron los scripts de migración de Flyway (`V1` a `V54`) para mapear las 52 tablas, deduciendo tipos de datos exactos, restricciones (Not Null) y relaciones de llave foránea.
+   * `V1` a `V52`: Creación modular e independiente de cada una de las 52 tablas.
+   * `V53`: Establecimiento de las 65 llaves foráneas de negocio para garantizar la integridad referencial global sin dependencias circulares de creación.
+   * `V54`: Aplicación de restricciones de autoría hacia `professionals(id)` para trazabilidad clínica.
 2. **Definición de Modelo Guía:** Se utilizó el módulo `country` como estándar de oro para heredar sus reglas de diseño arquitectónico y de persistencia.
-3. **Automatización a Gran Escala:** Se diseñaron scripts de metaprogramación que orquestaron la creación paralela de **1,352 archivos Java** (26 componentes por módulo).
-4. **Verificación de Integridad Espejo:** Se corrió una auditoría algorítmica para validar que las clases Java fuesen un reflejo 1 a 1 de la base de datos Flyway. Durante este proceso se rectificaron relaciones de llaves y mapeos de columnas de auditoría (`created_by`, `updated_by`).
+3. **Automatización a Gran Escala:** Se diseñaron scripts de metaprogramación que orquestaron la creación paralela de **1,352 archivos Java** (26 componentes por módulo para los 52 módulos).
+4. **Verificación de Integridad Espejo y Refinamiento:**
+   * Sincronización exacta de tipos y restricciones entre SQL y JPA (longitudes de `varchar`, tipos `Boolean` wrapper para columnas nulables, y `@JdbcTypeCode(SqlTypes.JSON)` para campos `jsonb`).
+   * Normalización de contratos de validación de entrada con Jakarta Validation (`@NotNull`, `@NotBlank`) en Request DTOs, garantizando respuestas unificadas `400 Bad Request`.
+   * Corrección de codificación UTF-8 homogénea en todos los controladores de excepciones.
 
 ## ⚖️ Reglas de Integridad y Resolución de Ambigüedades
 Durante el desarrollo se establecieron reglas unificadas para resolver ambigüedades arquitectónicas a lo largo de los 52 módulos:
@@ -16,10 +22,11 @@ Durante el desarrollo se establecieron reglas unificadas para resolver ambigüed
 1. **Gestión de Autoría (`created_by`, `updated_by`, etc.):**
    * Cuando la acción debe ser realizada estrictamente por personal interno de la clínica, la columna tiene una restricción de llave foránea hacia `professionals(id)` (Ej. `patients.created_by`, `encounters.updated_by`). Esto se garantizó mediante la migración de Flyway `V54`.
    * Cuando la acción puede ser ejecutada por actores externos (como pacientes en la app) o actores del sistema (como inteligencia artificial), la columna se mantiene como un identificador UUID puro sin forzar una restricción de llave.
-2. **Manejo de Excepciones de Integridad Relacional:**
-   * La Base de Datos es la única autoridad de verdad para la integridad referencial.
+2. **Manejo de Excepciones de Integridad Relacional y Validación:**
+   * La Base de Datos es la autoridad última para la integridad referencial.
+   * Todos los Request DTOs validan de forma temprana la presencia de IDs foráneos requeridos mediante `@NotNull`.
    * Todos los `*ExceptionHandler` capturan globalmente la excepción `DataIntegrityViolationException` inyectada por JPA/Hibernate.
-   * Se retorna **400 Bad Request** de forma unificada si se intenta ingresar una FK inexistente en una inserción o actualización.
+   * Se retorna **400 Bad Request** de forma unificada ante violaciones de validación de entrada o intentos de ingresar una FK inexistente en inserción/actualización.
    * Se retorna **409 Conflict** de forma unificada si se detecta una violación de restricción única (*Unique Constraint*).
 
 ## 🧱 Estructura Hexagonal (Puertos y Adaptadores)

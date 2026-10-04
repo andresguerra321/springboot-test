@@ -6,7 +6,7 @@ import java.util.UUID;
 public record RegisterChatEscalationCommand(
         UUID conversationId,
         UUID statusId,
-        boolean fromAi,
+        Boolean fromAi,
         String reason
 ) {
     public RegisterChatEscalationCommand {

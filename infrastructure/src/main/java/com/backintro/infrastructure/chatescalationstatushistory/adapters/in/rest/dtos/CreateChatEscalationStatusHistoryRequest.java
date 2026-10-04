@@ -2,14 +2,18 @@ package com.backintro.infrastructure.chatescalationstatushistory.adapters.in.res
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record CreateChatEscalationStatusHistoryRequest(
-        @jakarta.validation.constraints.NotNull(message = "escalationId is required")
+        @NotNull(message = "escalationId is required")
         UUID escalationId,
 
-        @jakarta.validation.constraints.NotNull(message = "escalationStatusId is required")
+        @NotNull(message = "escalationStatusId is required")
         UUID escalationStatusId,
+
+        @NotNull(message = "changedAt is required")
+
 
         java.time.LocalDateTime changedAt
 ) {}

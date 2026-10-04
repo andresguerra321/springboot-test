@@ -2,10 +2,11 @@ package com.backintro.infrastructure.treatmentgoal.adapters.in.rest.dtos;
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record CreateTreatmentGoalRequest(
-        @jakarta.validation.constraints.NotNull(message = "treatmentPlanId is required")
+        @NotNull(message = "treatmentPlanId is required")
         UUID treatmentPlanId,
 
         @NotBlank(message = "description is required")
@@ -17,6 +18,6 @@ public record CreateTreatmentGoalRequest(
 
         String notes,
 
-        @jakarta.validation.constraints.NotNull(message = "treatmentGoalStatusId is required")
+        @NotNull(message = "treatmentGoalStatusId is required")
         UUID treatmentGoalStatusId
 ) {}

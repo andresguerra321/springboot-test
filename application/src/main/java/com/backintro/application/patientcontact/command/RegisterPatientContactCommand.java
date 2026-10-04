@@ -6,8 +6,8 @@ import java.util.UUID;
 public record RegisterPatientContactCommand(
         UUID contactId,
         UUID patientId,
-        boolean primaryContact,
-        boolean emergencyContact,
+        Boolean primaryContact,
+        Boolean emergencyContact,
         UUID relationshipTypeId
 ) {
     public RegisterPatientContactCommand {

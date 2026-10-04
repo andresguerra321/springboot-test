@@ -31,3 +31,5 @@ target/
 ### OS ###
 .DS_Store
 Thumbs.db
+
+refactorscript.md

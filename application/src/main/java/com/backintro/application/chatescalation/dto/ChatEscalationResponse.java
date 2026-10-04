@@ -8,7 +8,7 @@ public record ChatEscalationResponse(
         UUID conversationId,
         UUID statusId,
         String statusName,
-        boolean fromAi,
+        Boolean fromAi,
         String reason,
         LocalDateTime createdAt
 ) {

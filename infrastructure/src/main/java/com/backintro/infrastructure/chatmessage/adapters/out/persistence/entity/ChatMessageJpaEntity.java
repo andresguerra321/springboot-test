@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -27,7 +30,8 @@ public class ChatMessageJpaEntity {
     private UUID participantId;
     @Column(name = "content", nullable = true)
     private String content;
-    @Column(name = "metadata", nullable = true)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "metadata", nullable = true, columnDefinition = "jsonb")
     private String metadata;
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;

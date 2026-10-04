@@ -19,7 +19,7 @@ public class StudyJpaEntity {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "name", nullable = false, length = 40)
     private String name;
 
     @Column(name = "created_at", updatable = false, nullable = false)

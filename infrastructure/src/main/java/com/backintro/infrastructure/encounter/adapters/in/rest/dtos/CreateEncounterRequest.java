@@ -2,17 +2,21 @@ package com.backintro.infrastructure.encounter.adapters.in.rest.dtos;
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record CreateEncounterRequest(
-        @jakarta.validation.constraints.NotNull(message = "clinicalRecordId is required")
+        @NotNull(message = "clinicalRecordId is required")
         UUID clinicalRecordId,
 
-        @jakarta.validation.constraints.NotNull(message = "professionalId is required")
+        @NotNull(message = "professionalId is required")
         UUID professionalId,
 
-        @jakarta.validation.constraints.NotNull(message = "encounterTypeId is required")
+        @NotNull(message = "encounterTypeId is required")
         UUID encounterTypeId,
+
+        @NotNull(message = "startedAt is required")
+
 
         java.time.LocalDateTime startedAt,
 
@@ -22,10 +26,10 @@ public record CreateEncounterRequest(
 
         String currentCondition,
 
-        @jakarta.validation.constraints.NotNull(message = "modalityId is required")
+        @NotNull(message = "modalityId is required")
         UUID modalityId,
 
-        @jakarta.validation.constraints.NotNull(message = "statusId is required")
+        @NotNull(message = "statusId is required")
         UUID statusId,
 
         UUID createdBy,

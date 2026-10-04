@@ -2,10 +2,11 @@ package com.backintro.infrastructure.clinicalrecord.adapters.in.rest.dtos;
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UpdateClinicalRecordRequest(
-        @jakarta.validation.constraints.NotNull(message = "patientId is required")
+        @NotNull(message = "patientId is required")
         UUID patientId,
 
         java.time.LocalDateTime creationDate,
@@ -17,7 +18,7 @@ public record UpdateClinicalRecordRequest(
 
         java.time.LocalDateTime closedAt,
 
-        @jakarta.validation.constraints.NotNull(message = "statusId is required")
+        @NotNull(message = "statusId is required")
         UUID statusId,
 
         UUID createdBy

@@ -28,7 +28,7 @@ public class PatientAllergyJpaEntity {
     @Column(name = "severity", nullable = true, length = 20)
     private String severity;
     @Column(name = "active", nullable = true)
-    private boolean active;
+    private Boolean active;
     @Column(name = "recorded_at", nullable = true)
     private java.time.LocalDateTime recordedAt;
     @Column(name = "recorded_by", nullable = true)
@@ -78,10 +78,10 @@ public class PatientAllergyJpaEntity {
     public void setSeverity(String severity) {
         this.severity = severity;
     }
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
     public java.time.LocalDateTime getRecordedAt() {

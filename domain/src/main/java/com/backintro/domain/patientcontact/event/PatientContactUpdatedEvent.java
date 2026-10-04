@@ -11,8 +11,8 @@ public record PatientContactUpdatedEvent(
     PatientContactId id,
     UUID contactId,
     UUID patientId,
-    boolean primaryContact,
-    boolean emergencyContact,
+    Boolean primaryContact,
+    Boolean emergencyContact,
     UUID relationshipTypeId,
     LocalDateTime occurredOn
 ) implements DomainEvent {

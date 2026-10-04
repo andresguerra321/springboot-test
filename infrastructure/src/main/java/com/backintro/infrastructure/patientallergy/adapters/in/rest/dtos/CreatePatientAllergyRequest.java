@@ -2,10 +2,11 @@ package com.backintro.infrastructure.patientallergy.adapters.in.rest.dtos;
 
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record CreatePatientAllergyRequest(
-        @jakarta.validation.constraints.NotNull(message = "patientId is required")
+        @NotNull(message = "patientId is required")
         UUID patientId,
 
         @NotBlank(message = "substance is required")

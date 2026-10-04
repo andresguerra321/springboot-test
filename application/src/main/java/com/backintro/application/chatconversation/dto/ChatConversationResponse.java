@@ -10,7 +10,7 @@ public record ChatConversationResponse(
         UUID priorityId,
         String priorityName,
         java.time.LocalDateTime lastMessageAt,
-        boolean closed,
+        Boolean closed,
         java.time.LocalDateTime closedAt,
         UUID closedBy,
         LocalDateTime createdAt,

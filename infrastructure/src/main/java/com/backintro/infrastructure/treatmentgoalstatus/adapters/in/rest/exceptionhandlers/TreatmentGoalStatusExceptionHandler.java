@@ -72,13 +72,13 @@ public class TreatmentGoalStatusExceptionHandler {
         String msg = ex.getMessage();
         if (msg != null && msg.toLowerCase().contains("foreign key constraint")) {
             body.put("status", HttpStatus.BAD_REQUEST.value());
-            body.put("error", "Error de integridad relacional: Llave forÃ¡nea no encontrada");
-            body.put("message", "Una o mÃ¡s dependencias referenciadas no existen en la base de datos.");
+            body.put("error", "Error de integridad relacional: Llave foránea no encontrada");
+            body.put("message", "Una o más dependencias referenciadas no existen en la base de datos.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
         } else if (msg != null && msg.toLowerCase().contains("unique constraint")) {
             body.put("status", HttpStatus.CONFLICT.value());
             body.put("error", "Error de integridad relacional: Registro duplicado");
-            body.put("message", "Ya existe un registro con las mismas llaves Ãºnicas.");
+            body.put("message", "Ya existe un registro con las mismas llaves únicas.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
         }
         

@@ -9,8 +9,8 @@ public record UpdatePatientContactCommand(
         PatientContactId id,
         UUID contactId,
         UUID patientId,
-        boolean primaryContact,
-        boolean emergencyContact,
+        Boolean primaryContact,
+        Boolean emergencyContact,
         UUID relationshipTypeId
 ) {
     public UpdatePatientContactCommand {
