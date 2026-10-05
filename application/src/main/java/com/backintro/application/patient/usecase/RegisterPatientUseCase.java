@@ -67,8 +67,8 @@ public class RegisterPatientUseCase {
                 saved.cityId() != null ? cityMunicipalityRepository.findById(new com.backintro.domain.citymunicipality.model.valueobject.CityMunicipalityId(saved.cityId())).map(c -> c.name()).orElse(null) : null,
                 saved.createdBy(),
                 saved.updatedBy(),
-                null,
-                null
+                saved.createdAt(),
+                saved.updatedAt()
         );
     }
 }

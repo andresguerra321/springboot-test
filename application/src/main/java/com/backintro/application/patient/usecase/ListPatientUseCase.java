@@ -51,8 +51,8 @@ public class ListPatientUseCase {
                 entity.cityId() != null ? cityMunicipalityRepository.findById(new com.backintro.domain.citymunicipality.model.valueobject.CityMunicipalityId(entity.cityId())).map(c -> c.name()).orElse(null) : null,
                 entity.createdBy(),
                 entity.updatedBy(),
-                null,
-                null
+                entity.createdAt(),
+                entity.updatedAt()
                 ))
                 .toList();
     }

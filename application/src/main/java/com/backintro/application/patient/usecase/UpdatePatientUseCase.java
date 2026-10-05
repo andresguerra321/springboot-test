@@ -71,8 +71,8 @@ public class UpdatePatientUseCase {
                 updated.cityId() != null ? cityMunicipalityRepository.findById(new com.backintro.domain.citymunicipality.model.valueobject.CityMunicipalityId(updated.cityId())).map(c -> c.name()).orElse(null) : null,
                 updated.createdBy(),
                 updated.updatedBy(),
-                null,
-                null
+                updated.createdAt(),
+                updated.updatedAt()
         );
     }
 }

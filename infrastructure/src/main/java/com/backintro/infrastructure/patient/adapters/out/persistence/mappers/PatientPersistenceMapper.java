@@ -26,6 +26,8 @@ public class PatientPersistenceMapper {
         jpa.setCityId(domain.cityId());
         jpa.setCreatedBy(domain.createdBy());
         jpa.setUpdatedBy(domain.updatedBy());
+        jpa.setCreatedAt(domain.createdAt());
+        jpa.setUpdatedAt(domain.updatedAt());
         return jpa;
     }
 
@@ -48,7 +50,9 @@ public class PatientPersistenceMapper {
                 jpa.isActive(),
                 jpa.getCityId(),
                 jpa.getCreatedBy(),
-                jpa.getUpdatedBy()
+                jpa.getUpdatedBy(),
+                jpa.getCreatedAt(),
+                jpa.getUpdatedAt()
         );
     }
 }

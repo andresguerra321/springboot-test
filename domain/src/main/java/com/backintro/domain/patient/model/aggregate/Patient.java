@@ -27,6 +27,8 @@ public class Patient extends AggregateRoot {
     private UUID cityId;
     private UUID createdBy;
     private UUID updatedBy;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     private Patient(
         PatientId id,
@@ -45,7 +47,9 @@ public class Patient extends AggregateRoot {
         boolean active,
         UUID cityId,
         UUID createdBy,
-        UUID updatedBy) {
+        UUID updatedBy,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.documentTypeId = Objects.requireNonNull(documentTypeId, "documentTypeId must not be null");
@@ -64,6 +68,8 @@ public class Patient extends AggregateRoot {
         this.cityId = cityId;
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public static Patient register(
@@ -102,7 +108,9 @@ public class Patient extends AggregateRoot {
             true,
             cityId,
             createdBy,
-            updatedBy);
+            updatedBy,
+            LocalDateTime.now(),
+            LocalDateTime.now());
 
         entity.recordEvent(
             new PatientRegisteredEvent(
@@ -129,7 +137,9 @@ public class Patient extends AggregateRoot {
         boolean active,
         UUID cityId,
         UUID createdBy,
-        UUID updatedBy) {
+        UUID updatedBy,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
         return new Patient(
             id,
             documentTypeId,
@@ -147,7 +157,9 @@ public class Patient extends AggregateRoot {
             active,
             cityId,
             createdBy,
-            updatedBy);
+            updatedBy,
+            createdAt,
+            updatedAt);
     }
 
     public void update(
@@ -305,6 +317,18 @@ public class Patient extends AggregateRoot {
     }
     public UUID getUpdatedBy() {
         return updatedBy();
+    }
+    public LocalDateTime createdAt() {
+        return createdAt;
+    }
+    public LocalDateTime updatedAt() {
+        return updatedAt;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt();
+    }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt();
     }
 
     public void deactivate() {
