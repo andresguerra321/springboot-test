@@ -1,0 +1,12 @@
+.git
+.gitignore
+.vscode
+.idea
+**/target/
+!infrastructure/target/*.war
+.mvn/
+mvnw
+mvnw.cmd
+*.md
+docs/
+out_classes/

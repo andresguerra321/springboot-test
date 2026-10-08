@@ -27,9 +27,13 @@ target/
 
 ### VS Code ###
 .vscode/
-
+/docs/
+/docs/
 ### OS ###
 .DS_Store
 Thumbs.db
 
 refactorscript.md
+.env
+.env.*
+docs/

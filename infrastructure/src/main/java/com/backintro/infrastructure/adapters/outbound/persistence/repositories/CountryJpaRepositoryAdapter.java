@@ -100,7 +100,6 @@ public class CountryJpaRepositoryAdapter implements CountryRepository {
         return findById(id.value());
     }
 
-    @Override
     public Optional<Country> findById(UUID id) {
         if (id == null) {
             return Optional.empty();
@@ -149,14 +148,12 @@ public class CountryJpaRepositoryAdapter implements CountryRepository {
         }
     }
 
-    @Override
     public void deleteById(CountryId id) {
         if (id != null && id.value() != null) {
             deleteById(id.value());
         }
     }
 
-    @Override
     public void deleteById(UUID id) {
         if (id == null) {
             return;
@@ -185,12 +182,10 @@ public class CountryJpaRepositoryAdapter implements CountryRepository {
         }
     }
 
-    @Override
     public boolean existsById(CountryId id) {
         return id != null && id.value() != null && existsById(id.value());
     }
 
-    @Override
     public boolean existsById(UUID id) {
         if (id == null) {
             return false;
@@ -218,7 +213,6 @@ public class CountryJpaRepositoryAdapter implements CountryRepository {
         return findByCode(code).isPresent();
     }
 
-    @Override
     public Optional<Country> findByCode(String codeCountry) {
         if (codeCountry == null || codeCountry.trim().isEmpty()) {
             return Optional.empty();

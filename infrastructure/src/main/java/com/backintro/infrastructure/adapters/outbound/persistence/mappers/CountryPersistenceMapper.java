@@ -18,9 +18,11 @@ public class CountryPersistenceMapper {
 
         return Country.restore(
                 new CountryId(entity.getId()),
-                entity.getNameCountry(),
                 entity.getCodeCountry(),
-                entity.getIsActive() != null ? entity.getIsActive() : true
+                entity.getNameCountry(),
+                entity.getDescription(),
+                entity.getIsActive() != null ? entity.getIsActive() : true,
+                entity.getTelephonePrefix()
         );
     }
 
@@ -35,9 +37,9 @@ public class CountryPersistenceMapper {
                 domain.id() != null ? domain.id().value() : null,
                 domain.name(),
                 domain.code(),
-                null,
+                domain.description(),
                 domain.isActive(),
-                null,
+                domain.telephonePrefix(),
                 now,
                 now
         );

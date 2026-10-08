@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  back-intro:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: back-intro-api
+    ports:
+      - "8080:8080"
+    environment:
+      # host.docker.internal permite al contenedor de Tomcat acceder a la base de datos 
+      # PostgreSQL que está corriendo expuesta en el puerto 5432 de tu máquina anfitriona.
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - DB_NAME=backintro
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - JWT_SECRET=esta_es_una_clave_secreta_super_segura_y_muy_larga_para_hs256_que_nadie_debe_saber
+    # Descomenta esto y configúralo si PostgreSQL estuviera en el mismo docker-compose
+    # depends_on:
+    #   - ai_back_office_db
